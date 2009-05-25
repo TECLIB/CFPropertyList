@@ -123,7 +123,7 @@ abstract class CFBinaryPropertyList {
       case 3:
         $words = unpack("Nhighword/Nlowword",$buff);
         $val = $words['highword'] << 32 | $words['lowword'];
-        if($val > pow(2,63)) $va -= pow(2,64);
+        if($val > pow(2,63)) $val -= pow(2,64);
         break;
     }
 
