@@ -92,6 +92,28 @@ abstract class CFBinaryPropertyList {
   }
 
   /**
+   * Create an 64 bit integer using bcmath or gmp
+   * @param int $hi The higher word
+   * @param int $lo The lower word
+   * @return mixed The integer (as int if possible, as string if not possible)
+   * @throws PListException if neither gmp nor bc available
+   */
+  protected static function make64Int($hi,$lo) {
+    // on x64, we can just use int
+    if(PHP_INT_SIZE > 4) return (((int)$hi)<<32) | ((int)$lo);
+
+    // lower word has to be unsigned since we don't use bitwise or, we use bcadd/gmp_add
+    $lo = sprintf("%u", $lo);
+
+    // use GMP or bcmath if possible
+    if(function_exists("gmp_mul")) return gmp_strval(gmp_add(gmp_mul($hi, "4294967296"), $lo));
+
+    if(function_exists("bcmul")) return bcadd(bcmul($hi,"4294967296"), $lo);
+
+    throw new PListException("either gmp or bc has to be installed!");
+  }
+
+  /**
    * Read an integer value
    * @param string $fname The filename of the file we're reading from
    * @param ressource $fd The file descriptor we're reading from
@@ -122,8 +144,8 @@ abstract class CFBinaryPropertyList {
         break;
       case 3:
         $words = unpack("Nhighword/Nlowword",$buff);
-        $val = $words['highword'] << 32 | $words['lowword'];
-        if($val > pow(2,63)) $val -= pow(2,64);
+        //$val = $words['highword'] << 32 | $words['lowword'];
+        $val = self::make64Int($words['highword'],$words['lowword']);
         break;
     }
 
@@ -717,9 +739,9 @@ abstract class CFBinaryPropertyList {
   protected function intToBinary($value) {
     $nbytes = 0;
     if($value > 0xFF) $nbytes = 1; // 1 byte integer
-    if($value > 0xFFFF) $nbytes += 1; // 2 byte integer
-    if($value > 0xFFFFFFFF) $nbytes += 1; // 4 byte integer
-    if($value < 0) $nbytes = 3; // 4 byte integer, since signed
+    if($value > 0xFFFF) $nbytes += 1; // 4 byte integer
+    if($value > 0xFFFFFFFF) $nbytes += 1; // 8 byte integer
+    if($value < 0) $nbytes = 3; // 8 byte integer, since signed
 
     $bdata = self::typeBytes("1", $nbytes); // 1 is 0001, type indicator for integer
     $buff = "";
@@ -732,11 +754,18 @@ abstract class CFBinaryPropertyList {
       $buff = pack($fmt, $value);
     }
     else {
-      if($value < 0) $value += pow(2,64);
-      $high_word = $value >> 32;
-      $low_word  = $value << 32;
-
-      $low_word &= 0xFFFFFFFF;
+      if(PHP_INT_SIZE > 4) {
+        // 64 bit signed integer; we need the higher and the lower 32 bit of the value
+        $high_word = $value >> 32;
+        $low_word = $value & 0xFFFFFFFF;
+      }
+      else {
+        // since PHP can only handle 32bit signed, we can only get 32bit signed values at this point - values above 0x7FFFFFFF are
+        // floats. So we ignore the existance of 64bit on non-64bit-machines
+        if($value < 0) $high_word = 0xFFFFFFFF;
+        else $high_word = 0;
+        $low_word = $value;
+      }
       $buff = pack("N", $high_word).pack("N", $low_word);
     }
 

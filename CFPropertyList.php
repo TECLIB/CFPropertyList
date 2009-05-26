@@ -13,7 +13,7 @@
  * @example example-create-02.php Using CFPropertyList::guess()
  * @example example-create-03.php Using CFPropertyList::guess() with {@link CFDate} and {@link CFData}
  */
-  
+
 /**
  * Require IOException, PListException, CFType and CFBinaryPropertyList
  */
