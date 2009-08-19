@@ -335,7 +335,7 @@ class CFData extends CFType {
  * @package plist
  * @subpackage plist.types
  */
-class CFArray extends CFType implements Iterator {
+class CFArray extends CFType implements Iterator, ArrayAccess {
   /**
    * Position of iterator {@link http://php.net/manual/en/class.iterator.php}
    * @var integer
@@ -483,6 +483,60 @@ class CFArray extends CFType implements Iterator {
     return isset($this->value[$this->iteratorPosition]);
   }
 
+  /************************************************************************************************
+   *    ArrayAccess   I N T E R F A C E
+   ************************************************************************************************/
+  
+  /**
+   * Determine if the array's key exists
+   * @param string $key the key to check
+   * @return bool true if the offset exists, false if not
+   * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+   * @uses $value to check if $key exists
+   * @author Sean Coates <sean@php.net>
+   */
+  public function offsetExists($key) {
+    return isset($this->value[$key]);
+  }
+  
+  /**
+   * Fetch a specific key from the CFArray
+   * @param string $key the key to check
+   * @return mixed the value associated with the key; null if the key is not found
+   * @link http://php.net/manual/en/arrayaccess.offsetget.php
+   * @uses get() to get the key's value
+   * @author Sean Coates <sean@php.net>
+   */
+  public function offsetGet($key) {
+    return $this->get($key);
+  }
+  
+  /**
+   * Set a value in the array
+   * @param string $key the key to set
+   * @param string $value the value to set
+   * @return void
+   * @link http://php.net/manual/en/arrayaccess.offsetset.php
+   * @uses setValue() to set the key's new value
+   * @author Sean Coates <sean@php.net>
+   */
+  public function offsetSet($key, $value) {
+    return $this->setValue($value);
+  }
+  
+  /**
+   * Unsets a value in the array
+   * <b>Note:</b> this dummy does nothing
+   * @param string $key the key to set
+   * @return void
+   * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+   * @author Sean Coates <sean@php.net>
+   */
+  public function offsetUnset($key) {
+    
+  }
+  
+  
 }
 
 /**
@@ -542,6 +596,18 @@ class CFDictionary extends CFType implements Iterator {
   public function get($key) {
     if(isset($this->value[$key])) return $this->value[$key];
     return null;
+  }
+
+  /**
+   * Generic getter (magic)
+   * @param integer $key Key of CFType to retrieve from collection
+   * @return CFType CFType found at $key, null else
+   * @link http://php.net/oop5.overloading
+   * @uses get() to retrieve the key's value
+   * @author Sean Coates <sean@php.net>
+   */
+  public function __get($key) {
+    return $this->get($key);
   }
 
   /**

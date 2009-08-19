@@ -121,6 +121,7 @@ abstract class CFBinaryPropertyList {
    * @return CFNumber The integer value
    * @throws PListException if integer val is invalid
    * @throws IOException if read error occurs
+   * @uses make64Int() to overcome PHP's big integer problems
    */
   protected function readBinaryInt($fname,$fd,$length) {
     if($length > 3) throw new PListException("Integer greater than 8 bytes: $length");

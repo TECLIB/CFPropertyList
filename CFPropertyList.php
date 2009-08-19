@@ -354,6 +354,18 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
   }
   
   /**
+   * Generic getter (magic)
+   * 
+   * @param integer $key Key of CFType to retrieve from collection
+   * @return CFType CFType found at $key, null else
+   * @author Sean Coates <sean@php.net>
+   * @link http://php.net/oop5.overloading
+   */
+  public function __get($key) {
+    return $this->get($key);
+  }
+  
+  /**
    * Remove CFType from collection.
    * @param integer $key Key of CFType to removes from collection
    * @return CFType removed CFType, null else
