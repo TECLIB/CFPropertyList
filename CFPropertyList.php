@@ -10,8 +10,8 @@
  * @example example-read-02.php Read a Binary PropertyList
  * @example example-read-03.php Read a PropertyList without knowing the type
  * @example example-create-01.php Using the CFPropertyList API
- * @example example-create-02.php Using CFPropertyList::guess()
- * @example example-create-03.php Using CFPropertyList::guess() with {@link CFDate} and {@link CFData}
+ * @example example-create-02.php Using {@link CFTypeDetector}
+ * @example example-create-03.php Using {@link CFTypeDetector} with {@link CFDate} and {@link CFData}
  */
 
 /**
@@ -22,6 +22,7 @@ require_once($plistDirectory.'/IOException.php');
 require_once($plistDirectory.'/PListException.php');
 require_once($plistDirectory.'/CFType.php');
 require_once($plistDirectory.'/CFBinaryPropertyList.php');
+require_once($plistDirectory.'/CFTypeDetector.php');
 
 /**
  * Property List
@@ -393,63 +394,19 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
 
   /**
    * Create CFType-structure from guessing the data-types.
-   * {@link CFArray}, {@link CFDictionary}, {@link CFBoolean}, {@link CFNumber} and {@link CFString} can be created, {@link CFDate} and {@link CFData} cannot.
-   * <br /><b>Note:</b>Distinguishing between {@link CFArray} and {@link CFDictionary} is done by examining the keys. 
-   * Keys must be strictly incrementing integers to evaluate to a {@link CFArray}. 
-   * Since PHP does not offer a function to test for associative arrays, 
-   * this test causes the input array to be walked twice and thus work rather slow on large collections. 
-   * If you work with large arrays and can live with all arrays evaluating to {@link CFDictionary}, 
-   * feel free to set the appropriate flag.
-   * <br /><b>Note:</b> If $value is an instance of CFType it is simply returned.
-   * <br /><b>Note:</b> If $value is neither a CFType, array, numeric, boolean nor string, it is omitted.
+   * The functionality has been moved to the more flexible {@link CFTypeDetector} facility.
    * @param mixed $value Value to convert to CFType
    * @param boolean $autoDictionary if true {@link CFArray}-detection is bypassed and arrays will be returned as {@link CFDictionary}.
    * @return CFType CFType based on guessed type
+   * @uses CFTypeDetector for actual type detection
+   * @deprecated
    */
   public static function guess($value, $autoDictionary=false) {
-    switch(true) {
-      case $value instanceof CFType:
-        return $value;
-      break;
-      case is_array($value):
-        // test if $value is simple or associative array
-        if(!$autoDictionary) {
-          $numericKeys = true;
-          $previousKey = null;
-          foreach($value as $key => $v) {
-            if(!is_numeric($key) || ($previousKey !== null && $previousKey != $key-1)) {
-              $numericKeys = false;
-              break;
-            }
-
-            $previousKey = $key;
-          } 
-
-          if($numericKeys) {
-            $t = new CFArray();
-            foreach($value as $v) $t->add(self::guess($v, $autoDictionary));
-            return $t;
-          }
-        }
-
-        $t = new CFDictionary();
-        foreach($value as $k => $v) $t->add($k, self::guess($v, $autoDictionary));
-
-        return $t;
-        break;
-
-      case is_numeric($value):
-        return new CFNumber($value);
-        break;
-
-      case is_bool($value):
-        return new CFBoolean($value);
-        break;
-
-      case is_string($value):
-        return new CFString($value);
-        break;
-    }
+    static $t = null;
+    if( $t === null ) 
+      $t = new CFTypeDetector( $autoDictionary );
+      
+    return $t->toCFType( $value );
   }
 
 
