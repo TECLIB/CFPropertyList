@@ -34,8 +34,8 @@ require_once($plistDirectory.'/CFTypeDetector.php');
  * @example example-read-02.php Read a Binary PropertyList
  * @example example-read-03.php Read a PropertyList without knowing the type
  * @example example-create-01.php Using the CFPropertyList API
- * @example example-create-02.php Using CFPropertyList::guess()
- * @example example-create-03.php Using CFPropertyList::guess() with {@link CFDate} and {@link CFData}
+ * @example example-create-02.php Using {@link CFTypeDetector}
+ * @example example-create-03.php Using {@link CFTypeDetector} with {@link CFDate} and {@link CFData}
  */
 class CFPropertyList extends CFBinaryPropertyList implements Iterator {
   /**
