@@ -40,7 +40,7 @@ $structure = array(
 );
 
 $td = new CFTypeDetector();  
-$guessedStructure = $td->toCFType( $value );
+$guessedStructure = $td->toCFType( $structure );
 $plist->add( $guessedStructure );
 
 
