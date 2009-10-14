@@ -102,9 +102,10 @@ class CFString extends CFType {
   /**
    * Get XML-Node.
    * @param DOMDocument $doc DOMDocument to create DOMNode in
+   * @param string $nodeName For compatibility reasons; just ignore it
    * @return DOMNode &lt;string&gt;-Element
    */
-  public function toXML(DOMDocument $doc) {
+  public function toXML(DOMDocument $doc,$nodeName="") {
     return parent::toXML($doc, 'string');
   }
 
@@ -130,9 +131,10 @@ class CFNumber extends CFType {
    * Get XML-Node.
    * Returns &lt;real&gt; if $value is a float, &lt;integer&gt; if $value is an integer.
    * @param DOMDocument $doc DOMDocument to create DOMNode in
+   * @param string $nodeName For compatibility reasons; just ignore it
    * @return DOMNode &lt;real&gt; or &lt;integer&gt;-Element 
    */
-  public function toXML(DOMDocument $doc) {
+  public function toXML(DOMDocument $doc,$nodeName="") {
     $ret = 'real';
     if(intval($this->value) == $this->value && !is_float($this->value) && strpos($this->value,'.') === false) {
       $this->value = intval($this->value);
@@ -204,9 +206,10 @@ class CFDate extends CFType {
   /**
    * Get XML-Node.
    * @param DOMDocument $doc DOMDocument to create DOMNode in
+   * @param string $nodeName For compatibility reasons; just ignore it
    * @return DOMNode &lt;date&gt;-Element
    */
-  public function toXML(DOMDocument $doc) {
+  public function toXML(DOMDocument $doc,$nodeName="") {
     $text = $doc->createTextNode(gmdate("Y-m-d\TH:i:s\Z",$this->getValue()));
     $node = $doc->createElement("date");
     $node->appendChild($text);
@@ -247,9 +250,10 @@ class CFBoolean extends CFType {
    * Get XML-Node.
    * Returns &lt;true&gt; if $value is a true, &lt;false&gt; if $value is false.
    * @param DOMDocument $doc DOMDocument to create DOMNode in
+   * @param string $nodeName For compatibility reasons; just ignore it
    * @return DOMNode &lt;true&gt; or &lt;false&gt;-Element 
    */
-  public function toXML(DOMDocument $doc) {
+  public function toXML(DOMDocument $doc,$nodeName="") {
     return $doc->createElement($this->value ? 'true' : 'false');
   }
 
@@ -312,9 +316,10 @@ class CFData extends CFType {
   /**
    * Get XML-Node.
    * @param DOMDocument $doc DOMDocument to create DOMNode in
+   * @param string $nodeName For compatibility reasons; just ignore it
    * @return DOMNode &lt;data&gt;-Element
    */
-  public function toXML(DOMDocument $doc) {
+  public function toXML(DOMDocument $doc,$nodeName="") {
     return parent::toXML($doc, 'data');
   }
 
@@ -398,9 +403,10 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
   /**
    * Get XML-Node.
    * @param DOMDocument $doc DOMDocument to create DOMNode in
+   * @param string $nodeName For compatibility reasons; just ignore it
    * @return DOMNode &lt;array&gt;-Element
    */
-  public function toXML(DOMDocument $doc) {
+  public function toXML(DOMDocument $doc,$nodeName="") {
     $node = $doc->createElement('array');
 
     foreach($this->value as $value) $node->appendChild($value->toXML($doc));
@@ -628,9 +634,10 @@ class CFDictionary extends CFType implements Iterator {
   /**
    * Get XML-Node.
    * @param DOMDocument $doc DOMDocument to create DOMNode in
+   * @param string $nodeName For compatibility reasons; just ignore it
    * @return DOMNode &lt;dict&gt;-Element
    */
-  public function toXML(DOMDocument $doc) {
+  public function toXML(DOMDocument $doc,$nodeName="") {
     $node = $doc->createElement('dict');
 
     foreach($this->value as $key => $value) {
