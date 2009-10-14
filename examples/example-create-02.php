@@ -38,10 +38,10 @@ $structure = array(
   'City Of Birth' => 'Springfield',
   'Name' => 'John Doe',
   'Kids Names' => array( 'John', 'Kyra' ),
-  
 );
 
-$guessedStructure = CFPropertyList::guess( $structure );
+$td = new CFTypeDetector();  
+$guessedStructure = $td->toCFType( $value );
 $plist->add( $guessedStructure );
 
 
