@@ -616,7 +616,7 @@ abstract class CFBinaryPropertyList {
           $this->uniqueTable[$k] = 0;
           $len = self::binaryStrlen($k);
           $this->stringSize += $len + 1;
-          $this->intSize += self::bytesSizeInt($len);
+          $this->intSize += self::bytesSizeInt(self::charsetStrlen($k,'UTF-8'));
         }
 
         $this->objectRefs += 2; // both, key and value, are refs
@@ -631,7 +631,7 @@ abstract class CFBinaryPropertyList {
     }
     elseif($value instanceOf CFData) {
       $val = $value->getValue();
-      $len = self::binaryStrlen($val);
+      $len = strlen($val);
       $this->intSize += self::bytesSizeInt($len);
       $this->miscSize += $len + 1;
       $this->countObjects++;
@@ -643,7 +643,7 @@ abstract class CFBinaryPropertyList {
       $this->uniqueTable[$val] = 0;
       $len = self::binaryStrlen($val);
       $this->stringSize += $len + 1;
-      $this->intSize += self::bytesSizeInt($len);
+      $this->intSize += self::bytesSizeInt(self::charsetStrlen($val,'UTF-8'));
     }
     $this->uniqueTable[$val]++;
   }
