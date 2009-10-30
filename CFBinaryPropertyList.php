@@ -296,7 +296,7 @@ abstract class CFBinaryPropertyList {
        how long the string is in bytes */
     if(strlen($buff = fread($fd, 2*$length)) != 2*$length) throw IOException::readError($fname);
 
-    if(!isset($this->uniqueTable[$buff])) $this->uniqueTable[$buf] = true;
+    if(!isset($this->uniqueTable[$buff])) $this->uniqueTable[$buff] = true;
     return new CFString(self::convertCharset($buff, "UTF-16BE", "UTF-8"));
   }
 
