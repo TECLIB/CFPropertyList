@@ -1,7 +1,7 @@
 <?php
 /**
  * Examples for how to use CFPropertyList
- * Create the PropertyList sample.xml.plist by using CFPropertyList::guess()
+ * Create the PropertyList sample.xml.plist by using {@link CFTypeDetector}.
  * @package plist
  * @subpackage plist.examples
  */
