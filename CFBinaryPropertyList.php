@@ -667,7 +667,7 @@ abstract class CFBinaryPropertyList {
     $this->offsets = Array();
 
     $binary_str = "bplist00";
-    $value = $this->getValue();
+    $value = $this->getValue(true);
     $this->uniqueAndCountValues($value);
 
     $this->countObjects += count($this->uniqueTable);
@@ -679,7 +679,7 @@ abstract class CFBinaryPropertyList {
     $this->objectTable = Array();
     $this->writtenObjectCount = 0;
     $this->uniqueTable = Array(); // we needed it to calculate several values
-    $this->getValue()->toBinary($this);
+    $value->toBinary($this);
 
     $object_offset = 8;
     $offsets = Array();

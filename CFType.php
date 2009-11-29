@@ -366,11 +366,15 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
 
   /**
    * Add CFType to collection.
-   * @param CFType $value CFType to add to collection
+   * @param CFType $value CFType to add to collection, defaults to null which results in an empty {@link CFString}
    * @return void
    * @uses $value for adding $value
    */
-  public function add($value) {
+  public function add(CFType $value=null) {
+    // anything but CFType is null, null is an empty string - sad but true
+    if( !$value )
+      $value = new CFString();
+
     $this->value[] = $value;
   }
 
@@ -585,11 +589,15 @@ class CFDictionary extends CFType implements Iterator {
   /**
    * Add CFType to collection.
    * @param string $key Key to add to collection
-   * @param CFType $value CFType to add to collection
+   * @param CFType $value CFType to add to collection, defaults to null which results in an empty {@link CFString}
    * @return void
    * @uses $value for adding $key $value pair
    */
-  public function add($key, $value) {
+  public function add($key, CFType $value=null) {
+    // anything but CFType is null, null is an empty string - sad but true
+    if( !$value )
+      $value = new CFString();
+
     $this->value[$key] = $value;
   }
 

@@ -36,6 +36,7 @@ require_once($plistDirectory.'/CFTypeDetector.php');
  * @example example-create-01.php Using the CFPropertyList API
  * @example example-create-02.php Using {@link CFTypeDetector}
  * @example example-create-03.php Using {@link CFTypeDetector} with {@link CFDate} and {@link CFData}
+ * @example example-create-04.php Using and extended {@link CFTypeDetector}
  */
 class CFPropertyList extends CFBinaryPropertyList implements Iterator {
   /**
@@ -323,7 +324,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
     $plist->setAttribute('version', '1.0');
 
     // add PropertyList's children
-    $plist->appendChild($this->getValue()->toXML($doc));
+    $plist->appendChild($this->getValue(true)->toXML($doc));
 
     return $doc->saveXML();
   }
@@ -339,7 +340,11 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * @return void
    * @uses $value for adding $value
    */
-  public function add($value) {
+  public function add(CFType $value=null) {
+    // anything but CFType is null, null is an empty string - sad but true
+    if( !$value )
+      $value = new CFString();
+
     $this->value[] = $value;
   }
 
@@ -384,11 +389,17 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
 
   /**
    * Get first (and only) child, or complete collection.
+   * @param string $cftype if set to true returned value will be CFArray instead of an array in case of a collection
    * @return CFType|array CFType or list of CFTypes known to the PropertyList
    * @uses $value for retrieving CFTypes
    */
-  public function getValue() {
+  public function getValue($cftype=false) {
     if(count($this->value) === 1) return $this->value[0];
+    if($cftype) {
+      $t = new CFArray();
+      foreach( $this->value as $value ) $t->add($value);
+      return $t;
+    }
     return $this->value;
   }
 

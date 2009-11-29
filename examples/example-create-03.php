@@ -24,7 +24,7 @@ $plist = new CFPropertyList();
 
 /*
  * import the array structure to create the sample.xml.plist
- * We make use of CFPropertyList::guess(), which truly is not almighty!
+ * We make use of CFTypeDetector, which truly is not almighty!
  */
 
 $structure = array(
