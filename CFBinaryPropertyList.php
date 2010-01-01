@@ -231,7 +231,11 @@ abstract class CFBinaryPropertyList {
    * @throws IOException if read error occurs
    */
   protected function readBinaryData($fname,$fd,$length) {
-    if(strlen($buff = fread($fd, $length)) != $length) throw IOException::readError($fname);
+    if($length == 0) $buff = "";
+    else {
+      if(strlen($buff = fread($fd, $length)) != $length) throw IOException::readError($fname);
+    }
+
     return new CFData($buff,false);
   }
 
@@ -244,7 +248,10 @@ abstract class CFBinaryPropertyList {
    * @throws IOException if read error occurs
    */
   protected function readBinaryString($fname,$fd,$length) {
-    if(strlen($buff = fread($fd, $length)) != $length) throw IOException::readError($fname);
+    if($length == 0) $buff = "";
+    else {
+      if(strlen($buff = fread($fd, $length)) != $length) throw IOException::readError($fname);
+    }
 
     if(!isset($this->uniqueTable[$buff])) $this->uniqueTable[$buff] = true;
     return new CFString($buff);
