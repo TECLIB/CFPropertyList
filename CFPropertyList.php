@@ -386,6 +386,17 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
 
     return null;
   }
+  
+  /**
+   * Empty the collection
+   * @return array the removed CFTypes
+   * @uses $value for removing CFType of $key
+   */
+  public function purge() {
+    $t = $this->value;
+    $this->value = array();
+    return $t;
+  }
 
   /**
    * Get first (and only) child, or complete collection.
@@ -394,10 +405,15 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * @uses $value for retrieving CFTypes
    */
   public function getValue($cftype=false) {
-    if(count($this->value) === 1) return $this->value[0];
+    if(count($this->value) === 1) {
+      $t = array_values( $this->value );
+      return $t[0];
+	}
     if($cftype) {
       $t = new CFArray();
-      foreach( $this->value as $value ) $t->add($value);
+      foreach( $this->value as $value ) {
+        if( $value instanceof CFType ) $t->add($value);
+      }
       return $t;
     }
     return $this->value;
