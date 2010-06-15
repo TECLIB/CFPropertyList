@@ -110,7 +110,12 @@ abstract class CFBinaryPropertyList {
 
     if(function_exists("bcmul")) return bcadd(bcmul($hi,"4294967296"), $lo);
 
-    throw new PListException("either gmp or bc has to be installed!");
+    if(class_exists('Math_BigInteger')) {
+      $bi = new Math_BigInteger($hi);
+      return $bi->multiply("4294967296")->add($lo)->toString();
+    }
+
+    throw new PListException("either gmp or bc has to be installed, or the Math_BigInteger has to be available!");
   }
 
   /**
