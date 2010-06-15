@@ -439,12 +439,12 @@ abstract class CFBinaryPropertyList {
   }
 
   /**
-   * Read a binary plist file
-   * @param string $file The file to read
+   * Read a binary plist stream
+   * @param resource $stream The stream to read
    * @return void
    * @throws IOException if read error occurs
    */
-  function readBinary($file) {
+  function readBinaryStream($stream) {
     $this->uniqueTable = Array();
     $this->countObjects = 0;
     $this->stringSize = 0;
@@ -458,17 +458,15 @@ abstract class CFBinaryPropertyList {
 
     $this->offsets = Array();
 
-    $fd = fopen($file,"rb");
-
     // first, we read the trailer: 32 byte from the end
-    fseek($fd,-32,SEEK_END);
-    $buff = fread($fd,32);
+    fseek($stream,-32,SEEK_END);
+    $buff = fread($stream,32);
 
     $infos = unpack("x6/Coffset_size/Cobject_ref_size/x4/Nnumber_of_objects/x4/Ntop_object/x4/Ntable_offset",$buff);
 
     // after that, get the offset table
-    fseek($fd,$infos['table_offset'], SEEK_SET);
-    $coded_offset_table = fread($fd,$infos['number_of_objects'] * $infos['offset_size']);
+    fseek($stream,$infos['table_offset'], SEEK_SET);
+    $coded_offset_table = fread($stream,$infos['number_of_objects'] * $infos['offset_size']);
     if(strlen($coded_offset_table) != $infos['number_of_objects'] * $infos['offset_size']) throw IOException::readError($file);
     $this->countObjects = $infos['number_of_objects'];
 
@@ -489,9 +487,21 @@ abstract class CFBinaryPropertyList {
     $this->uniqueTable = Array();
     $this->objectRefSize = $infos['object_ref_size'];
 
-    $top = $this->readBinaryObjectAt($file,$fd,$infos['top_object']+1);
+    $top = $this->readBinaryObjectAt($file,$stream,$infos['top_object']+1);
     $this->add($top);
 
+    fclose($fd);
+  }
+
+  /**
+   * Read a binary plist file
+   * @param string $file The file to read
+   * @return void
+   * @throws IOException if read error occurs
+   */
+  function readBinary($file) {
+    if(!($fd = fopen($file,"rb"))) throw new IOException("Could not open file {$file}!");
+    $this->readBinaryStream($fd);
     fclose($fd);
   }
 

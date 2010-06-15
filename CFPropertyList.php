@@ -130,7 +130,24 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
   public function loadXML($file=null) {
     $this->load($file,CFPropertyList::FORMAT_XML);
   }
-  
+
+  /**
+   * Load an XML PropertyList.
+   * @param resource $stream A stream containing the xml document.
+   * @return void
+   * @throws IOException if stream could not be read
+   * @throws DOMException if XML-stream could not be read properly
+   */
+  public function loadXMLStream($stream) {
+    $doc = new DOMDocument();
+    $contents = stream_get_contents($stream);
+
+    if($contents === FALSE) throw IOException::notReadable('');
+
+    if(!$doc->loadXML($contents)) throw new DOMException();
+    $this->import($doc->documentElement, $this);
+  }
+
   /**
    * Load an binary PropertyList.
    * @param string $file Path of PropertyList, defaults to {@link $file} 
