@@ -468,11 +468,18 @@ abstract class CFBinaryPropertyList {
     $this->countObjects = $infos['number_of_objects'];
 
     // decode offset table
-    $formats = Array("","C*","n*","(H6)*","N*");
-    $this->offsets = unpack($formats[$infos['offset_size']],$coded_offset_table);
-    if($infos['offset_size'] == 3) {
-      foreach($this->offsets as $k => $v) $this->offsets[$k] = hexdec($v);
+    $formats = Array("","C*","n*",NULL,"N*");
+    if($infos['offset_size'] == 3) { # since PHP does not support parenthesis in pack/unpack expressions,
+                                     # "(H6)*" does not work and we have to work round this by repeating the
+                                     # expression as often as it fits in the string
+      $this->offsets = array(NULL);
+      while($coded_offset_table) {
+        $str = unpack("H6",$coded_offset_table);
+        $this->offsets[] = hexdec($str[1]);
+        $coded_offset_table = substr($coded_offset_table,3);
+      }
     }
+    else $this->offsets = unpack($formats[$infos['offset_size']],$coded_offset_table);
 
     $this->uniqueTable = Array();
     $this->objectRefSize = $infos['object_ref_size'];
