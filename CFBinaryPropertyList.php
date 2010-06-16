@@ -444,7 +444,7 @@ abstract class CFBinaryPropertyList {
    * @return void
    * @throws IOException if read error occurs
    */
-  function readBinaryStream($stream) {
+  function readBinaryStream($file,$stream) {
     $this->uniqueTable = Array();
     $this->countObjects = 0;
     $this->stringSize = 0;
@@ -489,8 +489,6 @@ abstract class CFBinaryPropertyList {
 
     $top = $this->readBinaryObjectAt($file,$stream,$infos['top_object']+1);
     $this->add($top);
-
-    fclose($fd);
   }
 
   /**
@@ -501,7 +499,7 @@ abstract class CFBinaryPropertyList {
    */
   function readBinary($file) {
     if(!($fd = fopen($file,"rb"))) throw new IOException("Could not open file {$file}!");
-    $this->readBinaryStream($fd);
+    $this->readBinaryStream($file,$fd);
     fclose($fd);
   }
 
