@@ -244,7 +244,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
 
         if($filetype == "bplist") {
           if($version != "00") throw new PListException("Wrong file format version! Expected 00, got $version!");
-          $this->parseBinary($file);
+          $this->parseBinary($str);
           break;
         }
         // else: xml format, break not neccessary
