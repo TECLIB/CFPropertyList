@@ -442,6 +442,11 @@ abstract class CFBinaryPropertyList {
     return $this->readBinaryObject();
   }
 
+  /**
+   * Parse a binary plist string
+   * @return void
+   * @throws IOException if read error occurs
+   */
   public function parseBinaryString() {
     $this->uniqueTable = Array();
     $this->countObjects = 0;
@@ -498,6 +503,12 @@ abstract class CFBinaryPropertyList {
     $this->parseBinary($str);
   }
 
+  /**
+   * parse a binary plist string
+   * @param string $content The stream to read, defaults to {@link $this->content}
+   * @return void
+   * @throws IOException if read error occurs
+   */
   function parseBinary($content=NULL) {
     if($content !== NULL) $this->content = $content;
     $this->pos = 0;

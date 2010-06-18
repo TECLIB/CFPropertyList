@@ -214,6 +214,19 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
     }
   }
 
+  /**
+   * Parse a plist string.
+   * Parse and import a plist string.
+   * @param string $str String containing the PropertyList, defaults to {@link $content}
+   * @param integer $format The format of the property list, see {@link FORMAT_XML}, {@link FORMAT_BINARY} and {@link FORMAT_AUTO}, defaults to {@link $format}
+   * @return void
+   * @throws PListException if file format version is not 00
+   * @throws IOException if file could not be read
+   * @throws DOMException if plist file could not be parsed properly
+   * @uses $content if argument $str was not specified
+   * @uses $value reset to empty array
+   * @uses import() for importing the values
+   */
   public function parse($str=NULL,$format=NULL) {
     $format = $format !== null ? $format : $this->format;
     $str = $str !== null ? $str : $this->content;
