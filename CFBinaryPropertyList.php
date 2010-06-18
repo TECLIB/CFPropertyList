@@ -18,6 +18,18 @@
  */
 abstract class CFBinaryPropertyList {
   /**
+   * Content of the plist (unparsed string)
+   * @var string
+   */
+  protected $content = NULL;
+
+  /**
+   * position in the (unparsed) string
+   * @var integer
+   */
+  protected $pos = 0;
+
+  /**
    * Table containing uniqued objects
    * @var array
    */
@@ -120,21 +132,21 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read an integer value
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
    * @return CFNumber The integer value
    * @throws PListException if integer val is invalid
    * @throws IOException if read error occurs
    * @uses make64Int() to overcome PHP's big integer problems
    */
-  protected function readBinaryInt($fname,$fd,$length) {
+  protected function readBinaryInt($length) {
     if($length > 3) throw new PListException("Integer greater than 8 bytes: $length");
 
     $nbytes = 1 << $length;
 
     $val = null;
-    if(strlen($buff = fread($fd, $nbytes)) != $nbytes) throw IOException::readError($fname);
+    if(strlen($buff = substr($this->content, $this->pos, $nbytes)) != $nbytes) throw IOException::readError("");
+    $this->pos += $nbytes;
+
     switch($length) {
       case 0:
         $val = unpack("C", $buff);
@@ -160,19 +172,18 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read a real value
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
    * @return CFNumber The real value
    * @throws PListException if real val is invalid
    * @throws IOException if read error occurs
    */
-  protected function readBinaryReal($fname,$fd,$length) {
+  protected function readBinaryReal($length) {
     if($length > 3) throw new PListException("Real greater than 8 bytes: $length");
 
     $nbytes = 1 << $length;
     $val = null;
-    if(strlen($buff = fread($fd, $nbytes)) != $nbytes) throw IOException::readError($fname);
+    if(strlen($buff = substr($this->content,$this->pos, $nbytes)) != $nbytes) throw IOException::readError("");
+    $this->pos += $nbytes;
 
     switch($length) {
       case 0: // 1 byte float? must be an error
@@ -194,19 +205,18 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read a date value
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
    * @return CFDate The date value
    * @throws PListException if date val is invalid
    * @throws IOException if read error occurs
    */
-  protected function readBinaryDate($fname,$fd,$length) {
+  protected function readBinaryDate($length) {
     if($length > 3) throw new PListException("Date greater than 8 bytes: $length");
 
     $nbytes = 1 << $length;
     $val = null;
-    if(strlen($buff = fread($fd, $nbytes)) != $nbytes) throw IOException::readError($fname);
+    if(strlen($buff = substr($this->content, $this->pos, $nbytes)) != $nbytes) throw IOException::readError("");
+    $this->pos += $nbytes;
 
     switch($length) {
       case 0: // 1 byte CFDate is an error
@@ -229,16 +239,16 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read a data value
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
    * @return CFData The data value
    * @throws IOException if read error occurs
    */
-  protected function readBinaryData($fname,$fd,$length) {
+  protected function readBinaryData($length) {
     if($length == 0) $buff = "";
     else {
-      if(strlen($buff = fread($fd, $length)) != $length) throw IOException::readError($fname);
+      $buff = substr($this->content, $this->pos, $length);
+      if(strlen($buff) != $length) throw IOException::readError("");
+      $this->pos += $length;
     }
 
     return new CFData($buff,false);
@@ -246,16 +256,15 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read a string value, usually coded as utf8
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @param integer $length The length (in bytes) of the string value
    * @return CFString The string value, utf8 encoded
    * @throws IOException if read error occurs
    */
-  protected function readBinaryString($fname,$fd,$length) {
+  protected function readBinaryString($length) {
     if($length == 0) $buff = "";
     else {
-      if(strlen($buff = fread($fd, $length)) != $length) throw IOException::readError($fname);
+      if(strlen($buff = substr($this->content, $this->pos, $length)) != $length) throw IOException::readError("");
+      $this->pos += $length;
     }
 
     if(!isset($this->uniqueTable[$buff])) $this->uniqueTable[$buff] = true;
@@ -296,17 +305,16 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read a unicode string value, coded as UTF-16BE
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @param integer $length The length (in bytes) of the string value
    * @return CFString The string value, utf8 encoded
    * @throws IOException if read error occurs
    */
-  protected function readBinaryUnicodeString($fname,$fd,$length) {
+  protected function readBinaryUnicodeString($length) {
     /* The problem is: we get the length of the string IN CHARACTERS;
        since a char in UTF-16 can be 16 or 32 bit long, we don't really know
        how long the string is in bytes */
-    if(strlen($buff = fread($fd, 2*$length)) != 2*$length) throw IOException::readError($fname);
+    if(strlen($buff = substr($this->content, $this->pos, 2*$length)) != 2*$length) throw IOException::readError("");
+    $this->pos += 2 * $length;
 
     if(!isset($this->uniqueTable[$buff])) $this->uniqueTable[$buff] = true;
     return new CFString(self::convertCharset($buff, "UTF-16BE", "UTF-8"));
@@ -314,23 +322,23 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read an array value, including contained objects
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @param integer $length The number of contained objects
    * @return CFArray The array value, including the objects
    * @throws IOException if read error occurs
    */
-  protected function readBinaryArray($fname,$fd,$length) {
+  protected function readBinaryArray($length) {
     $ary = new CFArray();
 
     // first: read object refs
     if($length != 0) {
-      if(strlen($buff = fread($fd, $length * $this->objectRefSize)) != $length * $this->objectRefSize) throw IOException::readError($fname);
+      if(strlen($buff = substr($this->content, $this->pos, $length * $this->objectRefSize)) != $length * $this->objectRefSize) throw IOException::readError("");
+      $this->pos += $length * $this->objectRefSize;
+
       $objects = unpack($this->objectRefSize == 1 ? "C*" : "n*", $buff);
 
       // now: read objects
       for($i=0;$i<$length;++$i) {
-        $object = $this->readBinaryObjectAt($fname,$fd,$objects[$i+1]+1,$this->objectRefSize);
+        $object = $this->readBinaryObjectAt($objects[$i+1]+1,$this->objectRefSize);
         $ary->add($object);
       }
     }
@@ -340,28 +348,28 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read a dictionary value, including contained objects
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @param integer $length The number of contained objects
    * @return CFDictionary The dictionary value, including the objects
    * @throws IOException if read error occurs
    */
-  protected function readBinaryDict($fname,$fd,$length) {
+  protected function readBinaryDict($length) {
     $dict = new CFDictionary();
 
     // first: read keys
     if($length != 0) {
-      if(strlen($buff = fread($fd, $length * $this->objectRefSize)) != $length * $this->objectRefSize) throw IOException::readError($fname);
+      if(strlen($buff = substr($this->content, $this->pos, $length * $this->objectRefSize)) != $length * $this->objectRefSize) throw IOException::readError("");
+      $this->pos += $length * $this->objectRefSize;
       $keys = unpack(($this->objectRefSize == 1 ? "C*" : "n*"), $buff);
 
       // second: read object refs
-      if(strlen($buff = fread($fd, $length * $this->objectRefSize)) != $length * $this->objectRefSize) throw IOException::readError($fname);
+      if(strlen($buff = substr($this->content, $this->pos, $length * $this->objectRefSize)) != $length * $this->objectRefSize) throw IOException::readError("");
+      $this->pos += $length * $this->objectRefSize;
       $objects = unpack(($this->objectRefSize == 1 ? "C*" : "n*"), $buff);
 
       // read real keys and objects
       for($i=0;$i<$length;++$i) {
-        $key = $this->readBinaryObjectAt($fname,$fd,$keys[$i+1]+1);
-        $object = $this->readBinaryObjectAt($fname,$fd,$objects[$i+1]+1);
+        $key = $this->readBinaryObjectAt($keys[$i+1]+1);
+        $object = $this->readBinaryObjectAt($objects[$i+1]+1);
         $dict->add($key->getValue(),$object);
       }
     }
@@ -371,14 +379,13 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read an object type byte, decode it and delegate to the correct reader function
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @return mixed The value of the delegate reader, so any of the CFType subclasses
    * @throws IOException if read error occurs
    */
-  function readBinaryObject($fname,$fd) {
+  function readBinaryObject() {
     // first: read the marker byte
-    if(strlen($buff = fread($fd,1)) != 1) throw IOException::readError($fname);
+    if(strlen($buff = substr($this->content,$this->pos,1)) != 1) throw IOException::readError("");
+    $this->pos++;
 
     $object_length = unpack("C*", $buff);
     $object_length = $object_length[1]  & 0xF;
@@ -387,7 +394,7 @@ abstract class CFBinaryPropertyList {
 
     $object_type = substr($buff, 0, 1);
     if($object_type != "0" && $object_length == 15) {
-      $object_length = $this->readBinaryObject($fname,$fd,$this->objectRefSize);
+      $object_length = $this->readBinaryObject($this->objectRefSize);
       $object_length = $object_length->getValue();
     }
 
@@ -397,28 +404,28 @@ abstract class CFBinaryPropertyList {
         $retval = $this->readBinaryNullType($object_length);
         break;
       case '1': // integer
-        $retval = $this->readBinaryInt($fname,$fd,$object_length);
+        $retval = $this->readBinaryInt($object_length);
         break;
       case '2': // real
-        $retval = $this->readBinaryReal($fname,$fd,$object_length);
+        $retval = $this->readBinaryReal($object_length);
         break;
       case '3': // date
-        $retval = $this->readBinaryDate($fname,$fd,$object_length);
+        $retval = $this->readBinaryDate($object_length);
         break;
       case '4': // data
-        $retval = $this->readBinaryData($fname,$fd,$object_length);
+        $retval = $this->readBinaryData($object_length);
         break;
       case '5': // byte string, usually utf8 encoded
-        $retval = $this->readBinaryString($fname,$fd,$object_length);
+        $retval = $this->readBinaryString($object_length);
         break;
       case '6': // unicode string (utf16be)
-        $retval = $this->readBinaryUnicodeString($fname,$fd,$object_length);
+        $retval = $this->readBinaryUnicodeString($object_length);
         break;
       case 'a': // array
-        $retval = $this->readBinaryArray($fname,$fd,$object_length);
+        $retval = $this->readBinaryArray($object_length);
         break;
       case 'd': // dictionary
-        $retval = $this->readBinaryDict($fname,$fd,$object_length);
+        $retval = $this->readBinaryDict($object_length);
         break;
     }
 
@@ -427,24 +434,15 @@ abstract class CFBinaryPropertyList {
 
   /**
    * Read an object type byte at position $pos, decode it and delegate to the correct reader function
-   * @param string $fname The filename of the file we're reading from
-   * @param ressource $fd The file descriptor we're reading from
    * @param integer $pos The table position in the offsets table
    * @return mixed The value of the delegate reader, so any of the CFType subclasses
    */
-  function readBinaryObjectAt($fname,$fd,$pos) {
-    $position = $this->offsets[$pos];
-    fseek($fd,$position,SEEK_SET);
-    return $this->readBinaryObject($fname,$fd);
+  function readBinaryObjectAt($pos) {
+    $this->pos = $this->offsets[$pos];
+    return $this->readBinaryObject();
   }
 
-  /**
-   * Read a binary plist stream
-   * @param resource $stream The stream to read
-   * @return void
-   * @throws IOException if read error occurs
-   */
-  function readBinaryStream($file,$stream) {
+  public function parseBinaryString() {
     $this->uniqueTable = Array();
     $this->countObjects = 0;
     $this->stringSize = 0;
@@ -459,15 +457,13 @@ abstract class CFBinaryPropertyList {
     $this->offsets = Array();
 
     // first, we read the trailer: 32 byte from the end
-    fseek($stream,-32,SEEK_END);
-    $buff = fread($stream,32);
+    $buff = substr($this->content,-32);
 
     $infos = unpack("x6/Coffset_size/Cobject_ref_size/x4/Nnumber_of_objects/x4/Ntop_object/x4/Ntable_offset",$buff);
 
     // after that, get the offset table
-    fseek($stream,$infos['table_offset'], SEEK_SET);
-    $coded_offset_table = fread($stream,$infos['number_of_objects'] * $infos['offset_size']);
-    if(strlen($coded_offset_table) != $infos['number_of_objects'] * $infos['offset_size']) throw IOException::readError($file);
+    $coded_offset_table = substr($this->content,$infos['table_offset'],$infos['number_of_objects'] * $infos['offset_size']);
+    if(strlen($coded_offset_table) != $infos['number_of_objects'] * $infos['offset_size']) throw IOException::readError("");
     $this->countObjects = $infos['number_of_objects'];
 
     // decode offset table
@@ -487,8 +483,26 @@ abstract class CFBinaryPropertyList {
     $this->uniqueTable = Array();
     $this->objectRefSize = $infos['object_ref_size'];
 
-    $top = $this->readBinaryObjectAt($file,$stream,$infos['top_object']+1);
+    $top = $this->readBinaryObjectAt($infos['top_object']+1);
     $this->add($top);
+  }
+
+  /**
+   * Read a binary plist stream
+   * @param resource $stream The stream to read
+   * @return void
+   * @throws IOException if read error occurs
+   */
+  function readBinaryStream($stream) {
+    $str = stream_get_contents($stream);
+    $this->parseBinary($str);
+  }
+
+  function parseBinary($content=NULL) {
+    if($content !== NULL) $this->content = $content;
+    $this->pos = 0;
+
+    $this->parseBinaryString();
   }
 
   /**
@@ -499,7 +513,7 @@ abstract class CFBinaryPropertyList {
    */
   function readBinary($file) {
     if(!($fd = fopen($file,"rb"))) throw new IOException("Could not open file {$file}!");
-    $this->readBinaryStream($file,$fd);
+    $this->readBinaryStream($fd);
     fclose($fd);
   }
 

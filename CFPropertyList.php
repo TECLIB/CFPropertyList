@@ -139,13 +139,8 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * @throws DOMException if XML-stream could not be read properly
    */
   public function loadXMLStream($stream) {
-    $doc = new DOMDocument();
-    $contents = stream_get_contents($stream);
-
-    if($contents === FALSE) throw IOException::notReadable('');
-
-    if(!$doc->loadXML($contents)) throw new DOMException();
-    $this->import($doc->documentElement, $this);
+    if(($contents = stream_get_contents($stream)) === FALSE) throw IOException::notReadable('<stream>');
+    $this->parse($content,CFPropertyList::FORMAT_XML);
   }
 
   /**
@@ -158,6 +153,19 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    */
   public function loadBinary($file=null) {
     $this->load($file,CFPropertyList::FORMAT_BINARY);
+  }
+
+  /**
+   * Load an binary PropertyList.
+   * @param stream $stream Stream containing the PropertyList
+   * @return void
+   * @throws IOException if file could not be read
+   * @throws PListException if binary plist-file could not be read properly
+   * @uses parse() to actually load the file
+   */
+  public function loadBinaryStream($stream) {
+    if(($contents = stream_get_contents($stream)) === FALSE) throw IOException::notReadable('<stream>');
+    $this->parse($content,CFPropertyList::FORMAT_BINARY);
   }
 
   /**
@@ -204,7 +212,35 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
         $this->import($doc->documentElement, $this);
         break;
     }
+  }
 
+  public function parse($str=NULL,$format=NULL) {
+    $format = $format !== null ? $format : $this->format;
+    $str = $str !== null ? $str : $this->content;
+    $this->value = array();
+
+    switch($format) {
+      case CFPropertyList::FORMAT_BINARY:
+        $this->parseBinary($str);
+        break;
+      case CFPropertyList::FORMAT_AUTO: // what we now do is ugly, but neccessary to recognize the file format
+        if(($magic_number = substr($str,0,8)) === false) throw IOException::notReadable("<string>");
+
+        $filetype = substr($magic_number,0,6);
+        $version  = substr($magic_number,-2);
+
+        if($filetype == "bplist") {
+          if($version != "00") throw new PListException("Wrong file format version! Expected 00, got $version!");
+          $this->parseBinary($file);
+          break;
+        }
+        // else: xml format, break not neccessary
+      case CFPropertyList::FORMAT_XML:
+        $doc = new DOMDocument();
+        if(!$doc->load($str)) throw new DOMException();
+        $this->import($doc->documentElement, $this);
+        break;
+    }
   }
 
   /**
