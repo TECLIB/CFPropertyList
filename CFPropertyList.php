@@ -12,6 +12,7 @@
  * @example example-create-01.php Using the CFPropertyList API
  * @example example-create-02.php Using {@link CFTypeDetector}
  * @example example-create-03.php Using {@link CFTypeDetector} with {@link CFDate} and {@link CFData}
+ * @example example-modify-01.php Read, modify and save a PropertyList
  */
 
 /**
