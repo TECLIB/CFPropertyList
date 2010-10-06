@@ -26,22 +26,22 @@ class CFTypeDetector {
   protected $suppressExceptions = false;
 
   /**
-   * flag stating if it should be tried to convert objects to arrays
+   * name of a method that will be used for array to object conversations
    * @var boolean
    */
-  protected $useObjectToArrayCasting = false;
+  protected $objectToArrayMethod = false;
 
 
   /**
    * Create new CFTypeDetector
    * @param boolean $autoDicitionary if set to true all arrays will be converted to {@link CFDictionary}
    * @param boolean $suppressExceptions if set to true toCFType() will not throw any exceptions
-   * @param boolean $useObjectToArrayCasting if set to true, toCFType() will cast objects to array. You can then implement __toArray() and return an array which gets converted to plist types
+   * @param boolean $objectToArrayMethod if non-null, this method will be called on objects (if possible) to convert the object to an array
    */
-  public function __construct($autoDicitionary=false,$suppressExceptions=false,$useObjectToArrayCasting=false) {
+  public function __construct($autoDicitionary=false,$suppressExceptions=false,$objectToArrayMethod=null) {
     $this->autoDicitionary = $autoDicitionary;
     $this->suppressExceptions = $suppressExceptions;
-    $this->useObjectToArrayCasting = $useObjectToArrayCasting;
+    $this->objectToArrayMethod = $objectToArrayMethod;
   }
   
   /**
@@ -94,9 +94,16 @@ class CFTypeDetector {
         return $value;
       break;
 
-      case is_object($value) && $this->useObjectToArrayCasting && is_callable(array($value, '__toArray')):
+      case is_object($value) && $this->objectToArrayMethod && is_callable(array($value, $this->objectToArrayMethod)):
         // convert possible objects to arrays, arrays will be arrays
-        $value = (array)$value;
+        $value = call_user_func( array( $value, $this->objectToArrayMethod ) );
+
+        if(!is_array($value)){
+          if($this->suppressExceptions)
+            return $this->defaultValue();
+
+          throw new PListException('Could not determine CFType for object of type '. get_class($value));
+        }
 
       case $value instanceof Iterator:
       case is_array($value):
