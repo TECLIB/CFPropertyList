@@ -24,15 +24,24 @@ class CFTypeDetector {
    * @var boolean
    */
   protected $suppressExceptions = false;
-  
+
+  /**
+   * flag stating if it should be tried to convert objects to arrays
+   * @var boolean
+   */
+  protected $useObjectToArrayCasting = false;
+
+
   /**
    * Create new CFTypeDetector
    * @param boolean $autoDicitionary if set to true all arrays will be converted to {@link CFDictionary}
    * @param boolean $suppressExceptions if set to true toCFType() will not throw any exceptions
+   * @param boolean $useObjectToArrayCasting if set to true, toCFType() will cast objects to array. You can then implement __toArray() and return an array which gets converted to plist types
    */
-  public function __construct($autoDicitionary=false,$suppressExceptions=false) {
+  public function __construct($autoDicitionary=false,$suppressExceptions=false,$useObjectToArrayCasting=false) {
     $this->autoDicitionary = $autoDicitionary;
     $this->suppressExceptions = $suppressExceptions;
+    $this->useObjectToArrayCasting = $useObjectToArrayCasting;
   }
   
   /**
@@ -73,9 +82,7 @@ class CFTypeDetector {
    * If you work with large arrays and can live with all arrays evaluating to {@link CFDictionary}, 
    * feel free to set the appropriate flag.
    * <br /><b>Note:</b> If $value is an instance of CFType it is simply returned.
-   
    * <br /><b>Note:</b> If $value is neither a CFType, array, numeric, boolean nor string, it is omitted.
-   
    * @param mixed $value Value to convert to CFType
    * @param boolean $autoDictionary if true {@link CFArray}-detection is bypassed and arrays will be returned as {@link CFDictionary}.
    * @return CFType CFType based on guessed type
@@ -86,7 +93,11 @@ class CFTypeDetector {
       case $value instanceof CFType:
         return $value;
       break;
-      
+
+      case is_object($value) && $this->useObjectToArrayCasting && is_callable(array($value, '__toArray')):
+        // convert possible objects to arrays, arrays will be arrays
+        $value = (array)$value;
+
       case $value instanceof Iterator:
       case is_array($value):
         // test if $value is simple or associative array
@@ -119,7 +130,7 @@ class CFTypeDetector {
       case is_null($value):
         return new CFString();
       break;
-      
+
       case is_object($value):
         if( $this->suppressExceptions )
           return $this->defaultValue();
