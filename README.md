@@ -2,7 +2,7 @@
 
 The PHP implementation of Apple's PropertyList can handle XML PropertyLists as well as binary PropertyLists. It offers functionality to easily convert data between worlds, e.g. recalculating timestamps from unix epoch to apple epoch and vice versa. A feature to automagically create (guess) the plist structure from a normal PHP data structure will help you dump your data to plist in no time. 
 
-Note: CFPropertylist was originally hosten on [Google Code](http://code.google.com/p/cfpropertylist/)
+Note: CFPropertylist was originally hosted on [Google Code](http://code.google.com/p/cfpropertylist/)
 
 ## Choose Your Favorite Operating System
 
