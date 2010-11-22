@@ -94,16 +94,24 @@ class CFTypeDetector {
         return $value;
       break;
 
-      case is_object($value) && $this->objectToArrayMethod && is_callable(array($value, $this->objectToArrayMethod)):
+      case is_object($value):
+        // DateTime should be CFDate
+        if(class_exists( 'DateTime' ) && $value instanceof DateTime){
+          return new CFDate($value->getTimestamp());
+        }
+        
         // convert possible objects to arrays, arrays will be arrays
-        $value = call_user_func( array( $value, $this->objectToArrayMethod ) );
-
+        if($this->objectToArrayMethod && is_callable(array($value, $this->objectToArrayMethod))){
+          $value = call_user_func( array( $value, $this->objectToArrayMethod ) );
+        }
+        
         if(!is_array($value)){
           if($this->suppressExceptions)
             return $this->defaultValue();
 
           throw new PListException('Could not determine CFType for object of type '. get_class($value));
         }
+      /* break; omitted */
 
       case $value instanceof Iterator:
       case is_array($value):

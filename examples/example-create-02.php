@@ -31,6 +31,7 @@ $structure = array(
   // Note: dates cannot be guessed, so this will become a CFNumber and be treated as an integer
   // See example-04.php for a possible workaround
   'Date Of Graduation' => gmmktime( 19, 23, 43, 06, 22, 2004 ),
+  'Date Of Birth' => new DateTime( '1984-09-07 08:15:23', new DateTimeZone( 'Europe/Berlin' ) ),
   'Pets Names' => array(),
   // Note: data cannot be guessed, so this will become a CFString
   // See example-03.php for a possible workaround
