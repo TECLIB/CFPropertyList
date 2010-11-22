@@ -16,8 +16,10 @@ Although you might want to deliver data to your iPhone application, you might wa
 * requires either [MBString](http://php.net/mbstring) or [Iconv](http://php.net/iconv)
 * requires either [BC](http://php.net/bc) or [GMP](http://php.net/gmp) or [phpseclib](http://phpseclib.sourceforge.net/) (see BigIntegerBug for an explanation) - as of CFPropertyList 1.0.1
 
-## Further Reading
+## Related
 
 * [man(5) plist](http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html)
 * [CFBinaryPList.c](http://www.opensource.apple.com/source/CF/CF-476.15/CFBinaryPList.c)
 * [CFPropertyList in Ruby](http://rubyforge.org/projects/cfpropertylist/)
+* [CFPropertyList in Python](https://github.com/bencochran/CFPropertyList)
+* [plist on Wikipedia](http://en.wikipedia.org/wiki/Plist)
