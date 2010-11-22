@@ -146,13 +146,6 @@ class CFTypeDetector {
         return new CFString();
       break;
 
-      case is_object($value):
-        if( $this->suppressExceptions )
-          return $this->defaultValue();
-
-        throw new PListException('Could not determine CFType for object of type '. get_class($value));
-      break;
-      
       case is_resource($value):
         if( $this->suppressExceptions )
           return $this->defaultValue();
