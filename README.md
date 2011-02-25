@@ -20,6 +20,10 @@ Although you might want to deliver data to your iPhone application, you might wa
 
 CFPropertyList is published under the [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
+## Installation
+
+Next to cloning the git repository or [downloading](https://github.com/rodneyrehm/CFPropertyList/archives/master) an archive, you can now use [PEAR](http://www.pearhub.org/projects/CFPropertyList) thanks to [pearhub](https://github.com/troelskn/pearhub).
+
 ## Related
 
 * [man(5) plist](http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html)
