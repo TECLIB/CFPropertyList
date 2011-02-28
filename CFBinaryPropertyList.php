@@ -124,7 +124,7 @@ abstract class CFBinaryPropertyList {
 
     if(class_exists('Math_BigInteger')) {
       $bi = new Math_BigInteger($hi);
-      return $bi->multiply("4294967296")->add($lo)->toString();
+      return $bi->multiply(new Math_BigInteger("4294967296"))->add(new Math_BigInteger($lo))->toString();
     }
 
     throw new PListException("either gmp or bc has to be installed, or the Math_BigInteger has to be available!");
