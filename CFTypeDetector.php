@@ -61,6 +61,12 @@ class CFTypeDetector {
 
       $previousKey = $key;
     }
+    // additional check
+    // @editor Azat Khuzhin
+    if ($numericKeys) {
+      if (count($value) == 1 && $previousKey != 0) $numericKeys = false;
+    }
+    
     return !$numericKeys;
   }
   
