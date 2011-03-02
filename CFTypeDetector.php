@@ -61,6 +61,13 @@ class CFTypeDetector {
 
       $previousKey = $key;
     }
+
+    // https://github.com/rodneyrehm/CFPropertyList/issues/3
+    if($numericKeys){
+        if(count($value) == 1 && $previousKey != 0)
+            $numericKeys = false;
+    }
+
     return !$numericKeys;
   }
   
