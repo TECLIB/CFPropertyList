@@ -141,7 +141,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    */
   public function loadXMLStream($stream) {
     if(($contents = stream_get_contents($stream)) === FALSE) throw IOException::notReadable('<stream>');
-    $this->parse($content,CFPropertyList::FORMAT_XML);
+    $this->parse($contents,CFPropertyList::FORMAT_XML);
   }
 
   /**
