@@ -53,18 +53,14 @@ class CFTypeDetector {
   protected function isAssociativeArray($value) {
     $numericKeys = true;
     $previousKey = null;
+    $i = 0;
     foreach($value as $key => $v) {
-      if(!is_numeric($key) || ($previousKey !== null && $previousKey != $key-1)) {
+      if(!is_numeric($key) || ($previousKey !== null && $previousKey != $key-1) || ($i++ != $key)) {
         $numericKeys = false;
         break;
       }
 
       $previousKey = $key;
-    }
-    // additional check
-    // @editor Azat Khuzhin
-    if ($numericKeys) {
-      if (count($value) == 1 && $previousKey != 0) $numericKeys = false;
     }
     
     return !$numericKeys;
