@@ -583,5 +583,4 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
 
 }
 
-
-?>
+# eof
