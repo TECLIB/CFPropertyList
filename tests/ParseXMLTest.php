@@ -3,14 +3,19 @@
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','on');
 
-define('LIBDIR',dirname(__FILE__).'/../');
-define('TEST_DATA_FILE',dirname(__FILE__).'/xml-data.plist');
+if(!defined('LIBDIR')) {
+  define('LIBDIR',dirname(__FILE__).'/../');
+}
+
+if(!defined('TEST_XML_DATA_FILE')) {
+  define('TEST_XML_DATA_FILE',dirname(__FILE__).'/xml-data.plist');
+}
 
 require_once(LIBDIR.'/CFPropertyList.php');
 
-class XMLTest extends PHPUnit_Framework_TestCase {
+class ParseXMLTest extends PHPUnit_Framework_TestCase {
   public function testParse() {
-    $plist = new CFPropertyList(TEST_DATA_FILE);
+    $plist = new CFPropertyList(TEST_XML_DATA_FILE);
 
     $vals = $plist->toArray();
     $this->assertEquals(count($vals),4);
@@ -26,7 +31,7 @@ class XMLTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testParseString() {
-    $content = file_get_contents(TEST_DATA_FILE);
+    $content = file_get_contents(TEST_XML_DATA_FILE);
 
     $plist = new CFPropertyList();
     $plist->parse($content);
@@ -46,7 +51,7 @@ class XMLTest extends PHPUnit_Framework_TestCase {
 
   public function testParseStream() {
     $plist = new CFPropertyList();
-    if(($fd = fopen(TEST_DATA_FILE,"r")) == NULL) {
+    if(($fd = fopen(TEST_XML_DATA_FILE,"r")) == NULL) {
       throw new IOException("Error opening test data file for reading!");
     }
 

@@ -3,14 +3,19 @@
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','on');
 
-define('LIBDIR',dirname(__FILE__).'/../');
-define('TEST_DATA_FILE',dirname(__FILE__).'/binary-data.plist');
+if(!defined('LIBDIR')) {
+  define('LIBDIR',dirname(__FILE__).'/../');
+}
+
+if(!defined('TEST_BINARY_DATA_FILE')) {
+  define('TEST_BINARY_DATA_FILE',dirname(__FILE__).'/binary-data.plist');
+}
 
 require_once(LIBDIR.'/CFPropertyList.php');
 
-class BinaryTest extends PHPUnit_Framework_TestCase {
+class BinaryParseTest extends PHPUnit_Framework_TestCase {
   public function testParseBinary() {
-    $plist = new CFPropertyList(TEST_DATA_FILE);
+    $plist = new CFPropertyList(TEST_BINARY_DATA_FILE);
 
     $vals = $plist->toArray();
     $this->assertEquals(count($vals),4);
@@ -26,7 +31,7 @@ class BinaryTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testParseBinaryString() {
-    $content = file_get_contents(TEST_DATA_FILE);
+    $content = file_get_contents(TEST_BINARY_DATA_FILE);
 
     $plist = new CFPropertyList();
     $plist->parse($content);
@@ -46,7 +51,7 @@ class BinaryTest extends PHPUnit_Framework_TestCase {
 
   public function testParseStream() {
     $plist = new CFPropertyList();
-    if(($fd = fopen(TEST_DATA_FILE,"rb")) == NULL) {
+    if(($fd = fopen(TEST_BINARY_DATA_FILE,"rb")) == NULL) {
       throw new IOException("Error opening test data file for reading!");
     }
 
