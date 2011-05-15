@@ -464,6 +464,10 @@ abstract class CFBinaryPropertyList {
     // first, we read the trailer: 32 byte from the end
     $buff = substr($this->content,-32);
 
+    if(strlen($buff) != 32) {
+      throw new PListException('Error in PList format: content is less than at least necessary 32 bytes!');
+    }
+
     $infos = unpack("x6/Coffset_size/Cobject_ref_size/x4/Nnumber_of_objects/x4/Ntop_object/x4/Ntable_offset",$buff);
 
     // after that, get the offset table
@@ -499,7 +503,10 @@ abstract class CFBinaryPropertyList {
    * @throws IOException if read error occurs
    */
   function readBinaryStream($stream) {
-    $str = stream_get_contents($stream);
+    if(($str = stream_get_contents($stream)) === false || empty($str)) {
+      throw new PListException("Error reading stream!");
+    }
+
     $this->parseBinary($str);
   }
 
@@ -510,7 +517,18 @@ abstract class CFBinaryPropertyList {
    * @throws IOException if read error occurs
    */
   function parseBinary($content=NULL) {
-    if($content !== NULL) $this->content = $content;
+    if($content !== NULL) {
+      $this->content = $content;
+    }
+
+    if($this->content === NULL || empty($this->content)) {
+      throw new PListException("Content may not be empty!");
+    }
+
+    if(substr($this->content,0,8) != 'bplist00') {
+      throw new PListException("Invalid binary string!");
+    }
+
     $this->pos = 0;
 
     $this->parseBinaryString();
@@ -523,7 +541,10 @@ abstract class CFBinaryPropertyList {
    * @throws IOException if read error occurs
    */
   function readBinary($file) {
-    if(!($fd = fopen($file,"rb"))) throw new IOException("Could not open file {$file}!");
+    if(!($fd = fopen($file,"rb"))) {
+      throw new IOException("Could not open file {$file}!");
+    }
+
     $this->readBinaryStream($fd);
     fclose($fd);
   }
@@ -966,5 +987,4 @@ abstract class CFBinaryPropertyList {
 
 }
 
-
-?>
+# eof
