@@ -464,7 +464,7 @@ abstract class CFBinaryPropertyList {
     // first, we read the trailer: 32 byte from the end
     $buff = substr($this->content,-32);
 
-    if(strlen($buff) != 32) {
+    if(strlen($buff) < 32) {
       throw new PListException('Error in PList format: content is less than at least necessary 32 bytes!');
     }
 
@@ -521,7 +521,7 @@ abstract class CFBinaryPropertyList {
       $this->content = $content;
     }
 
-    if($this->content === NULL || empty($this->content)) {
+    if(empty($this->content)) {
       throw new PListException("Content may not be empty!");
     }
 
