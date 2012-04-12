@@ -225,6 +225,14 @@ class CFDate extends CFType {
     return $bplist->dateToBinary($this->value);
   }
 
+  public function toArray() {
+    if (class_exists('DateTime')) {
+      return new DateTime('@'.intval($this->getValue()), new DateTimeZone('UTC'));
+    }
+
+    return $this->getValue();
+  }
+
   /**
    * Create a UNIX timestamp from a PList date string
    * @param string $val The date string (e.g. "2009-05-13T20:23:43Z")
