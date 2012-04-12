@@ -142,4 +142,13 @@ class CFDate extends CFType
         }
         return gmmktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
     }
+
+    public function toArray()
+    {
+        if (class_exists('DateTime')) {
+            return new DateTime('@'.intval($this->getValue()), new DateTimeZone('UTC'));
+        }
+
+        return parent::getValue();
+    }
 }
