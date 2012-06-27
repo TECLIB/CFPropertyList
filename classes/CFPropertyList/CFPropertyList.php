@@ -17,15 +17,15 @@
 
 namespace CFPropertyList;
 use \Iterator, \DOMDocument, \DOMException, DOMImplementation, DOMNode;
+
 /**
  * Require IOException, PListException, CFType and CFBinaryPropertyList
  */
-$plistDirectory = dirname(__FILE__);
-require_once($plistDirectory.'/IOException.php');
-require_once($plistDirectory.'/PListException.php');
-require_once($plistDirectory.'/CFType.php');
-require_once($plistDirectory.'/CFBinaryPropertyList.php');
-require_once($plistDirectory.'/CFTypeDetector.php');
+require_once(__DIR__.'/IOException.php');
+require_once(__DIR__.'/PListException.php');
+require_once(__DIR__.'/CFType.php');
+require_once(__DIR__.'/CFBinaryPropertyList.php');
+require_once(__DIR__.'/CFTypeDetector.php');
 
 /**
  * Property List
