@@ -129,10 +129,6 @@ class CFTypeDetector {
         return $t;
       break;
 
-      case is_numeric($value):
-        return new CFNumber($value);
-      break;
-
       case is_bool($value):
         return new CFBoolean($value);
       break;
@@ -152,6 +148,10 @@ class CFTypeDetector {
         throw new PListException('Could not determine CFType for resource of type '. get_resource_type($value));
       break;
       
+      case is_numeric($value):
+        return new CFNumber($value);
+      break;
+
       default:
         if( $this->suppressExceptions )
           return $this->defaultValue();
