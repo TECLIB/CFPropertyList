@@ -11,6 +11,10 @@
   * @example example-create-03.php Using {@link CFTypeDetector} with {@link CFDate} and {@link CFData}
   * @example example-create-04.php Using and extended {@link CFTypeDetector}
   */
+
+namespace CFPropertyList;
+use \DateTime, \Iterator;
+
 class CFTypeDetector {
   
   /**

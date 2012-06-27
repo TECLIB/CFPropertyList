@@ -7,6 +7,7 @@
  * @package plist
  * @version $Id$
  */
+namespace CFPropertyList;
 
 /**
  * Exception for errors with the PList format

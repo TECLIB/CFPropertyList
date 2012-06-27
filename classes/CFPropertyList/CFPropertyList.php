@@ -15,6 +15,8 @@
  * @example example-modify-01.php Read, modify and save a PropertyList
  */
 
+namespace CFPropertyList;
+use \Iterator, \DOMDocument, \DOMException, DOMImplementation, DOMNode;
 /**
  * Require IOException, PListException, CFType and CFBinaryPropertyList
  */

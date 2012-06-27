@@ -8,6 +8,8 @@
  * @subpackage plist.types
  * @version $Id$
  */
+namespace CFPropertyList;
+use \DOMDocument;
 
 /**
  * Base-Class of all CFTypes used by CFPropertyList
