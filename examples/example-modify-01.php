@@ -5,6 +5,7 @@
  * @package plist
  * @subpackage plist.examples
  */
+namespace CFPropertyList;
 
 // just in case...
 error_reporting( E_ALL );
@@ -13,11 +14,11 @@ ini_set( 'display_errors', 'on' );
 /**
  * Require CFPropertyList
  */
-require_once(dirname(__FILE__).'/../CFPropertyList.php');
+require_once(__DIR__.'/../classes/CFPropertyList/CFPropertyList.php');
 
 
 // load an existing list
-$plist = new CFPropertyList( dirname(__FILE__).'/sample.xml.plist' );
+$plist = new CFPropertyList( __DIR__.'/sample.xml.plist' );
 
 
 foreach( $plist->getValue(true) as $key => $value )
@@ -27,7 +28,7 @@ foreach( $plist->getValue(true) as $key => $value )
 		$value->setValue( 'Mars' );
 	}
 	
-	if( $value instanceof Iterator )
+	if( $value instanceof \Iterator )
 	{
 		// The value is a CFDictionary or CFArray, you may continue down the tree
 	}
@@ -35,6 +36,6 @@ foreach( $plist->getValue(true) as $key => $value )
 
 
 // save data
-$plist->save( dirname(__FILE__).'/modified.plist', CFPropertyList::FORMAT_XML );
+$plist->save( __DIR__.'/modified.plist', CFPropertyList::FORMAT_XML );
 
 ?>
