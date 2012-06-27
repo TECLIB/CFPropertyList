@@ -15,7 +15,7 @@ namespace CFPropertyList;
  * @author Christian Kruse <cjk@wwwtech.de>
  * @package plist
  */
-class PListException extends Exception {
+class PListException extends \Exception {
 
 }
 

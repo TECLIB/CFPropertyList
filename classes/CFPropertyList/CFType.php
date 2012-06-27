@@ -9,7 +9,7 @@
  * @version $Id$
  */
 namespace CFPropertyList;
-use \DOMDocument;
+use \DOMDocument, \Iterator, \ArrayAccess;
 
 /**
  * Base-Class of all CFTypes used by CFPropertyList

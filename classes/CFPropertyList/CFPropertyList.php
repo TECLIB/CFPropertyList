@@ -95,15 +95,15 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * @var array
    */
   protected static $types = array(
-    'string' => 'CFString',
-    'real' => 'CFNumber',
+    'string'  => 'CFString',
+    'real'    => 'CFNumber',
     'integer' => 'CFNumber',
-    'date' => 'CFDate',
-    'true' => 'CFBoolean',
-    'false' => 'CFBoolean',
-    'data' => 'CFData',
-    'array' => 'CFArray',
-    'dict' => 'CFDictionary'
+    'date'    => 'CFDate',
+    'true'    => 'CFBoolean',
+    'false'   => 'CFBoolean',
+    'data'    => 'CFData',
+    'array'   => 'CFArray',
+    'dict'    => 'CFDictionary'
  );
 
 
@@ -273,7 +273,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
       // skip if we can't handle the element
       if(!isset(self::$types[$n->nodeName])) continue;
 
-      $class = self::$types[$n->nodeName];
+      $class = 'CFPropertyList\\'.self::$types[$n->nodeName];
       $key = null;
 
       // find previous <key> if possible
