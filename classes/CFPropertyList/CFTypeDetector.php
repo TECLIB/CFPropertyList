@@ -167,4 +167,4 @@ class CFTypeDetector {
 
 }
 
-?>
+

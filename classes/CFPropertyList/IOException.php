@@ -15,7 +15,7 @@ namespace CFPropertyList;
  * @author Christian Kruse <cjk@wwwtech.de>
  * @package plist
  */
-class IOException extends \Exception {
+class IOException extends \xception {
   /**
    * Flag telling the File could not be found
    */
@@ -96,5 +96,3 @@ class IOException extends \Exception {
   }
 }
 
-
-?>
