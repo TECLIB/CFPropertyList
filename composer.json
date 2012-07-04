@@ -1,0 +1,32 @@
+{
+    "name": "ChiperSoft\/CFPropertyList",
+    "description": "This is a fork of CFPropertyList by Rodney Rehm, created for the purpose of reorganizing the CFPropertyList classes into PHP 5.3 namespacing, following PSR-0 rules.",
+    "version": "0.1.0",
+    "type": "library",
+    "time": "",
+    "homepage": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ChiperSoft",
+            "email": "chiper@chipersoft.com"
+        },
+        {
+            "name": "Christian Kruse",
+            "email": "cjk@wwwtech.de"
+        },
+        {
+            "name": "Rodney Rehm",
+            "email": "mail+github@rodneyrehm.de"
+        },
+        {
+            "name": "Serge Paquet",
+            "email": "serge.paquet@libeo.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "CFPropertyList":"classes\/"
+        }
+    }
+}
