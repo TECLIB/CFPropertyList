@@ -7,6 +7,7 @@
  * @package plist
  * @version $Id$
  */
+namespace CFPropertyList;
 
 /**
  * Basic Input / Output Exception
@@ -14,7 +15,7 @@
  * @author Christian Kruse <cjk@wwwtech.de>
  * @package plist
  */
-class IOException extends Exception {
+class IOException extends \Exception {
   /**
    * Flag telling the File could not be found
    */
@@ -95,5 +96,3 @@ class IOException extends Exception {
   }
 }
 
-
-?>

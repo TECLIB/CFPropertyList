@@ -1,19 +1,21 @@
 <?php
 
+namespace CFPropertyList;
+
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','on');
 
 if(!defined('LIBDIR')) {
-  define('LIBDIR',dirname(__FILE__).'/../');
+  define('LIBDIR',__DIR__.'/../classes/CFPropertyList');
 }
 
 if(!defined('TEST_XML_DATA_FILE')) {
-  define('TEST_XML_DATA_FILE',dirname(__FILE__).'/xml-data.plist');
+  define('TEST_XML_DATA_FILE',__DIR__.'/xml-data.plist');
 }
 
 require_once(LIBDIR.'/CFPropertyList.php');
 
-class ParseXMLTest extends PHPUnit_Framework_TestCase {
+class ParseXMLTest extends \PHPUnit_Framework_TestCase {
   public function testParse() {
     $plist = new CFPropertyList(TEST_XML_DATA_FILE);
 
@@ -85,10 +87,10 @@ class ParseXMLTest extends PHPUnit_Framework_TestCase {
       $plist = new CFPropertyList();
       $plist->parse('lalala');
     }
-    catch(DOMException $e) {
+    catch(\DOMException $e) {
       $catched = true;
     }
-    catch(PHPUnit_Framework_Error $e) {
+    catch(\PHPUnit_Framework_Error $e) {
       $catched = true;
     }
 
@@ -104,7 +106,7 @@ class ParseXMLTest extends PHPUnit_Framework_TestCase {
     catch(PListException $e) {
       return;
     }
-    catch(PHPUnit_Framework_Error $e) {
+    catch(\PHPUnit_Framework_Error $e) {
       return;
     }
 

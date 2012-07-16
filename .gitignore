@@ -1,1 +1,6 @@
 docs
+*tmp
+composer.lock
+vendor
+.foundation
+Makefile

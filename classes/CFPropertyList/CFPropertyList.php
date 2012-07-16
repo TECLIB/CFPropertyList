@@ -15,15 +15,17 @@
  * @example example-modify-01.php Read, modify and save a PropertyList
  */
 
+namespace CFPropertyList;
+use \Iterator, \DOMDocument, \DOMException, DOMImplementation, DOMNode;
+
 /**
  * Require IOException, PListException, CFType and CFBinaryPropertyList
  */
-$plistDirectory = dirname(__FILE__);
-require_once($plistDirectory.'/IOException.php');
-require_once($plistDirectory.'/PListException.php');
-require_once($plistDirectory.'/CFType.php');
-require_once($plistDirectory.'/CFBinaryPropertyList.php');
-require_once($plistDirectory.'/CFTypeDetector.php');
+require_once(__DIR__.'/IOException.php');
+require_once(__DIR__.'/PListException.php');
+require_once(__DIR__.'/CFType.php');
+require_once(__DIR__.'/CFBinaryPropertyList.php');
+require_once(__DIR__.'/CFTypeDetector.php');
 
 /**
  * Property List
@@ -93,15 +95,15 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * @var array
    */
   protected static $types = array(
-    'string' => 'CFString',
-    'real' => 'CFNumber',
+    'string'  => 'CFString',
+    'real'    => 'CFNumber',
     'integer' => 'CFNumber',
-    'date' => 'CFDate',
-    'true' => 'CFBoolean',
-    'false' => 'CFBoolean',
-    'data' => 'CFData',
-    'array' => 'CFArray',
-    'dict' => 'CFDictionary'
+    'date'    => 'CFDate',
+    'true'    => 'CFBoolean',
+    'false'   => 'CFBoolean',
+    'data'    => 'CFData',
+    'array'   => 'CFArray',
+    'dict'    => 'CFDictionary'
  );
 
 
@@ -271,7 +273,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
       // skip if we can't handle the element
       if(!isset(self::$types[$n->nodeName])) continue;
 
-      $class = self::$types[$n->nodeName];
+      $class = 'CFPropertyList\\'.self::$types[$n->nodeName];
       $key = null;
 
       // find previous <key> if possible
