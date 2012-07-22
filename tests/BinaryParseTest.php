@@ -1,19 +1,21 @@
 <?php
 
+namespace CFPropertyList;
+
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','on');
 
 if(!defined('LIBDIR')) {
-  define('LIBDIR',dirname(__FILE__).'/../');
+  define('LIBDIR',__DIR__.'/../classes/CFPropertyList');
 }
 
 if(!defined('TEST_BINARY_DATA_FILE')) {
-  define('TEST_BINARY_DATA_FILE',dirname(__FILE__).'/binary-data.plist');
+  define('TEST_BINARY_DATA_FILE',__DIR__.'/binary-data.plist');
 }
 
 require_once(LIBDIR.'/CFPropertyList.php');
 
-class BinaryParseTest extends PHPUnit_Framework_TestCase {
+class BinaryParseTest extends \PHPUnit_Framework_TestCase {
   public function testParseBinary() {
     $plist = new CFPropertyList(TEST_BINARY_DATA_FILE);
 

@@ -7,6 +7,7 @@
  * @package plist
  * @version $Id$
  */
+namespace CFPropertyList;
 
 /**
  * Exception for errors with the PList format
@@ -14,9 +15,8 @@
  * @author Christian Kruse <cjk@wwwtech.de>
  * @package plist
  */
-class PListException extends Exception {
+class PListException extends \Exception {
 
 }
 
 
-?>

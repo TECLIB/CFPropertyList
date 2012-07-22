@@ -5,6 +5,7 @@
  * @package plist
  * @subpackage plist.examples
  */
+namespace CFPropertyList;
 
 // just in case...
 error_reporting( E_ALL );
@@ -13,7 +14,7 @@ ini_set( 'display_errors', 'on' );
 /**
  * Require CFPropertyList
  */
-require_once(dirname(__FILE__).'/../CFPropertyList.php');
+require_once(__DIR__.'/../classes/CFPropertyList/CFPropertyList.php');
 
 class DemoDetector extends CFTypeDetector {
   
@@ -32,7 +33,7 @@ class DemoDetector extends CFTypeDetector {
  * We make use of CFTypeDetector, which truly is not almighty!
  */
 
-$stack = new SplStack();
+$stack = new \SplStack();
 $stack[] = 1;
 $stack[] = 2;
 $stack[] = 3;
@@ -51,8 +52,8 @@ try {
   $td = new CFTypeDetector();  
   $guessedStructure = $td->toCFType( $structure );
   $plist->add( $guessedStructure );
-  $plist->saveXML( dirname(__FILE__).'/example-create-04.xml.plist' );
-  $plist->saveBinary( dirname(__FILE__).'/example-create-04.binary.plist' );
+  $plist->saveXML( __DIR__.'/example-create-04.xml.plist' );
+  $plist->saveBinary( __DIR__.'/example-create-04.binary.plist' );
 }
 catch( PListException $e ) {
   echo 'Normal detection: ', $e->getMessage(), "\n";
@@ -66,8 +67,8 @@ try {
   $td = new CFTypeDetector( false, true );  
   $guessedStructure = $td->toCFType( $structure );
   $plist->add( $guessedStructure );
-  $plist->saveXML( dirname(__FILE__).'/example-create-04.xml.plist' );
-  $plist->saveBinary( dirname(__FILE__).'/example-create-04.binary.plist' );
+  $plist->saveXML( __DIR__.'/example-create-04.xml.plist' );
+  $plist->saveBinary( __DIR__.'/example-create-04.binary.plist' );
 }
 catch( PListException $e ) {
   echo 'Silent detection: ', $e->getMessage(), "\n";
@@ -81,8 +82,8 @@ try {
   $td = new DemoDetector();  
   $guessedStructure = $td->toCFType( $structure );
   $plist->add( $guessedStructure );
-  $plist->saveXML( dirname(__FILE__).'/example-create-04.xml.plist' );
-  $plist->saveBinary( dirname(__FILE__).'/example-create-04.binary.plist' );
+  $plist->saveXML( __DIR__.'/example-create-04.xml.plist' );
+  $plist->saveBinary( __DIR__.'/example-create-04.binary.plist' );
 }
 catch( PListException $e ) {
   echo 'User defined detection: ', $e->getMessage(), "\n";

@@ -1,19 +1,21 @@
 <?php
 
+namespace CFPropertyList;
+
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','on');
 
 if(!defined('LIBDIR')) {
-  define('LIBDIR',dirname(__FILE__).'/../');
+  define('LIBDIR',__DIR__.'/../classes/CFPropertyList');
 }
 
 if(!defined('WRITE_XML_DATA_FILE')) {
-  define('WRITE_XML_DATA_FILE',dirname(__FILE__).'/binary.plist');
+  define('WRITE_XML_DATA_FILE',__DIR__.'/binary.plist');
 }
 
 require_once(LIBDIR.'/CFPropertyList.php');
 
-class WriteXMLTest extends PHPUnit_Framework_TestCase {
+class WriteXMLTest extends \PHPUnit_Framework_TestCase {
   public function testWriteFile() {
     $plist = new CFPropertyList();
     $dict = new CFDictionary();
