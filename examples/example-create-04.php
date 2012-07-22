@@ -64,7 +64,7 @@ catch( PListException $e ) {
  */
 try {
   $plist = new CFPropertyList();
-  $td = new CFTypeDetector( false, true );  
+  $td = new CFTypeDetector( array('suppressExceptions' => true) );
   $guessedStructure = $td->toCFType( $structure );
   $plist->add( $guessedStructure );
   $plist->saveXML( __DIR__.'/example-create-04.xml.plist' );

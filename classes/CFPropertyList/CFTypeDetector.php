@@ -31,21 +31,28 @@ class CFTypeDetector {
 
   /**
    * name of a method that will be used for array to object conversations
+   * @var callable
+   */
+  protected $objectToArrayMethod = null;
+  
+  /**
+   * flag stating if "123.23" should be converted to float (true) or preserved as string (false)
    * @var boolean
    */
-  protected $objectToArrayMethod = false;
+  protected $castNumericStrings = true;
 
 
   /**
    * Create new CFTypeDetector
-   * @param boolean $autoDicitionary if set to true all arrays will be converted to {@link CFDictionary}
-   * @param boolean $suppressExceptions if set to true toCFType() will not throw any exceptions
-   * @param boolean $objectToArrayMethod if non-null, this method will be called on objects (if possible) to convert the object to an array
+   * @param array $options Configuration for casting values [autoDictionary, suppressExceptions, objectToArrayMethod, castNumericStrings]
    */
-  public function __construct($autoDicitionary=false,$suppressExceptions=false,$objectToArrayMethod=null) {
-    $this->autoDicitionary = $autoDicitionary;
-    $this->suppressExceptions = $suppressExceptions;
-    $this->objectToArrayMethod = $objectToArrayMethod;
+  public function __construct(array $options=array()) {
+    //$autoDicitionary=false,$suppressExceptions=false,$objectToArrayMethod=null
+    foreach ($options as $key => $value) {
+      if (property_exists($this, $key)) {
+        $this->$key = $value;
+      }
+    }
   }
 
   /**
@@ -137,28 +144,34 @@ class CFTypeDetector {
         return new CFBoolean($value);
       break;
 
-      case is_string($value):
-        return new CFString($value);
-      break;
-
       case is_null($value):
         return new CFString();
       break;
 
       case is_resource($value):
-        if( $this->suppressExceptions )
+        if ($this->suppressExceptions) {
           return $this->defaultValue();
+        }
 
         throw new PListException('Could not determine CFType for resource of type '. get_resource_type($value));
       break;
 
       case is_numeric($value):
+        if (!$this->castNumericStrings && is_string($value)) {
+          return new CFString($value);
+        }
+        
         return new CFNumber($value);
+      break;
+      
+      case is_string($value):
+        return new CFString($value);
       break;
 
       default:
-        if( $this->suppressExceptions )
+        if ($this->suppressExceptions) {
           return $this->defaultValue();
+        }
 
         throw new PListException('Could not determine CFType for '. gettype($value));
       break;

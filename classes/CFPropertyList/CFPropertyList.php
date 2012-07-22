@@ -492,15 +492,15 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * Create CFType-structure from guessing the data-types.
    * The functionality has been moved to the more flexible {@link CFTypeDetector} facility.
    * @param mixed $value Value to convert to CFType
-   * @param boolean $autoDictionary if true {@link CFArray}-detection is bypassed and arrays will be returned as {@link CFDictionary}.
+   * @param array $options Configuration for casting values [autoDictionary, suppressExceptions, objectToArrayMethod, castNumericStrings]
    * @return CFType CFType based on guessed type
    * @uses CFTypeDetector for actual type detection
    * @deprecated
    */
-  public static function guess($value, $autoDictionary=false) {
+  public static function guess($value, $options=array()) {
     static $t = null;
     if( $t === null )
-      $t = new CFTypeDetector( $autoDictionary );
+      $t = new CFTypeDetector( $options );
 
     return $t->toCFType( $value );
   }
