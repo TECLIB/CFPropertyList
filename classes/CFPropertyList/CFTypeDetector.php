@@ -16,13 +16,13 @@ namespace CFPropertyList;
 use \DateTime, \Iterator;
 
 class CFTypeDetector {
-  
+
   /**
    * flag stating if all arrays should automatically be converted to {@link CFDictionary}
    * @var boolean
    */
   protected $autoDictionary = false;
-  
+
   /**
    * flag stating if exceptions should be suppressed or thrown
    * @var boolean
@@ -47,7 +47,7 @@ class CFTypeDetector {
     $this->suppressExceptions = $suppressExceptions;
     $this->objectToArrayMethod = $objectToArrayMethod;
   }
-  
+
   /**
    * Determine if an array is associative or numerical.
    * Numerical Arrays have incrementing index-numbers that don't contain gaps.
@@ -66,7 +66,7 @@ class CFTypeDetector {
     }
     return !$numericKeys;
   }
-  
+
   /**
    * Get the default value
    * @return CFType the default value to return if no suitable type could be determined
@@ -74,15 +74,15 @@ class CFTypeDetector {
   protected function defaultValue() {
     return new CFString();
   }
-  
+
   /**
    * Create CFType-structure by guessing the data-types.
    * {@link CFArray}, {@link CFDictionary}, {@link CFBoolean}, {@link CFNumber} and {@link CFString} can be created, {@link CFDate} and {@link CFData} cannot.
-   * <br /><b>Note:</b>Distinguishing between {@link CFArray} and {@link CFDictionary} is done by examining the keys. 
-   * Keys must be strictly incrementing integers to evaluate to a {@link CFArray}. 
-   * Since PHP does not offer a function to test for associative arrays, 
-   * this test causes the input array to be walked twice and thus work rather slow on large collections. 
-   * If you work with large arrays and can live with all arrays evaluating to {@link CFDictionary}, 
+   * <br /><b>Note:</b>Distinguishing between {@link CFArray} and {@link CFDictionary} is done by examining the keys.
+   * Keys must be strictly incrementing integers to evaluate to a {@link CFArray}.
+   * Since PHP does not offer a function to test for associative arrays,
+   * this test causes the input array to be walked twice and thus work rather slow on large collections.
+   * If you work with large arrays and can live with all arrays evaluating to {@link CFDictionary},
    * feel free to set the appropriate flag.
    * <br /><b>Note:</b> If $value is an instance of CFType it is simply returned.
    * <br /><b>Note:</b> If $value is neither a CFType, array, numeric, boolean nor string, it is omitted.
@@ -102,12 +102,12 @@ class CFTypeDetector {
         if(class_exists( 'DateTime' ) && $value instanceof DateTime){
           return new CFDate($value->getTimestamp());
         }
-        
+
         // convert possible objects to arrays, arrays will be arrays
         if($this->objectToArrayMethod && is_callable(array($value, $this->objectToArrayMethod))){
           $value = call_user_func( array( $value, $this->objectToArrayMethod ) );
         }
-        
+
         if(!is_array($value)){
           if($this->suppressExceptions)
             return $this->defaultValue();
@@ -151,7 +151,7 @@ class CFTypeDetector {
 
         throw new PListException('Could not determine CFType for resource of type '. get_resource_type($value));
       break;
-      
+
       case is_numeric($value):
         return new CFNumber($value);
       break;
