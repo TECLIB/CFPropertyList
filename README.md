@@ -28,7 +28,7 @@ CFPropertyList is published under the [MIT License](http://www.opensource.org/li
 
 ## Installation
 
-Next to cloning the git repository or [downloading](https://github.com/rodneyrehm/CFPropertyList/archives/master) an archive, you can now use [PEAR](http://www.pearhub.org/projects/CFPropertyList) thanks to [pearhub](https://github.com/troelskn/pearhub).
+see [Composer / Packagist](http://packagist.org/packages/rodneyrehm/plist).
 
 ## Related
 
