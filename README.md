@@ -19,7 +19,7 @@ Although you might want to deliver data to your iPhone application, you might wa
 
 ## Requirements And Limitations
 
-* requires PHP5 (tested with PHP5.2.9 and 5.3.0 on Mac, PHP5.2.1 on Windows)
+* requires PHP5.3 (as of CFPropertyList 2.0)
 * requires either [MBString](http://php.net/mbstring) or [Iconv](http://php.net/iconv)
 * requires either [BC](http://php.net/bc) or [GMP](http://php.net/gmp) or [phpseclib](http://phpseclib.sourceforge.net/) (see BigIntegerBug for an explanation) - as of CFPropertyList 1.0.1
 

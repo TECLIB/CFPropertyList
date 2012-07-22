@@ -1,5 +1,5 @@
 {
-    "name": "rodneyrehm/CFPropertyList",
+    "name": "CFPropertyList/CFPropertyList",
     "description": "Library for reading and writing Apple's CFPropertyList (plist) files in XML as well as binary format.",
     "keywords": ["plist"],
     "type": "library",
