@@ -73,7 +73,7 @@ class ParseXMLTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @expectedException IOException
+   * @expectedException CFPropertyList\IOException
    */
   public function testEmptyString() {
     $plist = new CFPropertyList();

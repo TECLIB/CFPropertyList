@@ -1,12 +1,5 @@
 # CFPropertyList
 
-This is a fork of CFPropertyList by Rodney Rehm, created for the purpose of reorganizing the CFPropertyList classes into PHP 5.3 namespacing, following PSR-0 rules.
-
-PSR-0 Fork by Jarvis Badgley, https://github.com/ChiperSoft/CFPropertyList
-Original by Rodney Rehm, https://github.com/rodneyrehm/CFPropertyList
-
----
-
 The PHP implementation of Apple's PropertyList can handle XML PropertyLists as well as binary PropertyLists. It offers functionality to easily convert data between worlds, e.g. recalculating timestamps from unix epoch to apple epoch and vice versa. A feature to automagically create (guess) the plist structure from a normal PHP data structure will help you dump your data to plist in no time.
 
 Note: CFPropertylist was originally hosted on [Google Code](http://code.google.com/p/cfpropertylist/)
@@ -27,6 +20,7 @@ Although you might want to deliver data to your iPhone application, you might wa
 
 - Rodney Rehm <rodney.rehm@medialize.de>
 - Christian Kruse <cjk@wwwtech.de>
+- PSR-0 changes by Jarvis Badgley <https://github.com/ChiperSoft/CFPropertyList>
 
 ## License
 

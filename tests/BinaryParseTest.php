@@ -73,7 +73,7 @@ class BinaryParseTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @expectedException PListException
+   * @expectedException CFPropertyList\PListException
    */
   public function testEmptyString() {
     $plist = new CFPropertyList();
