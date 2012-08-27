@@ -129,16 +129,16 @@ class CFTypeDetector {
         return $t;
       break;
 
+      case is_string($value):
+        return new CFString($value);
+      break;
+
       case is_numeric($value):
         return new CFNumber($value);
       break;
 
       case is_bool($value):
         return new CFBoolean($value);
-      break;
-
-      case is_string($value):
-        return new CFString($value);
       break;
 
       case is_null($value):
