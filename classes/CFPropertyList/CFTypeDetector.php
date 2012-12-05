@@ -13,7 +13,7 @@
   */
 
 namespace CFPropertyList;
-use \DateTime, \Iterator;
+use \DateTime, \Iterator, \StdClass;
 
 class CFTypeDetector {
 
@@ -113,6 +113,9 @@ class CFTypeDetector {
         // convert possible objects to arrays, arrays will be arrays
         if($this->objectToArrayMethod && is_callable(array($value, $this->objectToArrayMethod))){
           $value = call_user_func( array( $value, $this->objectToArrayMethod ) );
+        }
+        elseif($value instanceof StdClass){
+          $value = (array) $value;
         }
 
         if(!is_array($value)){
