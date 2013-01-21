@@ -70,12 +70,8 @@ abstract class CFType {
    */
   public function toXML(DOMDocument $doc, $nodeName) {
     $node = $doc->createElement($nodeName);
-
-    if($this->value !== '') {
-      $text = $doc->createTextNode($this->value);
-      $node->appendChild($text);
-    }
-
+    $text = $doc->createTextNode($this->value);
+    $node->appendChild($text);
     return $node;
   }
 
