@@ -34,7 +34,7 @@ class CFTypeDetector {
    * @var callable
    */
   protected $objectToArrayMethod = null;
-  
+
   /**
    * flag stating if "123.23" should be converted to float (true) or preserved as string (false)
    * @var boolean
@@ -160,10 +160,10 @@ class CFTypeDetector {
         if (!$this->castNumericStrings && is_string($value)) {
           return new CFString($value);
         }
-        
+
         return new CFNumber($value);
       break;
-      
+
       case is_string($value):
         if(strpos($value, "\x00") !== false) {
           return new CFData($value);
@@ -183,5 +183,3 @@ class CFTypeDetector {
   }
 
 }
-
-
