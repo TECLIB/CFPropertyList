@@ -165,7 +165,11 @@ class CFTypeDetector {
       break;
       
       case is_string($value):
+        if(strpos($value, "\x00") !== false) {
+          return new CFData($value);
+        }
         return new CFString($value);
+
       break;
 
       default:
