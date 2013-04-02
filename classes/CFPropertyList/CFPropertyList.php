@@ -65,6 +65,12 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * @var string
    */
   protected $file = null;
+  
+  /**
+   * Detected format of PropertyList
+   * @var integer
+   */
+  protected $detectedFormat = null;
 
   /**
    * Path of PropertyList
@@ -119,6 +125,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
   public function __construct($file=null,$format=self::FORMAT_AUTO) {
     $this->file = $file;
     $this->format = $format;
+    $this->detectedFormat = $format;
     if($this->file) $this->load();
   }
 
@@ -205,9 +212,11 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
 
         if($filetype == "bplist") {
           if($version != "00") throw new PListException("Wrong file format version! Expected 00, got $version!");
+          $this->detectedFormat = CFPropertyList::FORMAT_BINARY;
           $this->readBinary($file);
           break;
         }
+        $this->detectedFormat = CFPropertyList::FORMAT_XML;
         // else: xml format, break not neccessary
       case CFPropertyList::FORMAT_XML:
         $doc = new DOMDocument();
@@ -247,9 +256,11 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
 
         if($filetype == "bplist") {
           if($version != "00") throw new PListException("Wrong file format version! Expected 00, got $version!");
+          $this->detectedFormat = CFPropertyList::FORMAT_BINARY;
           $this->parseBinary($str);
           break;
         }
+        $this->detectedFormat = CFPropertyList::FORMAT_XML;
         // else: xml format, break not neccessary
       case CFPropertyList::FORMAT_XML:
         $doc = new DOMDocument();
@@ -353,6 +364,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
   public function save($file=null,$format=null) {
     $file = $file ? $file : $this->file;
     $format = $format ? $format : $this->format;
+    if($format == self::FORMAT_AUTO)$format = $this->detectedFormat;
 
     if( !in_array( $format, array( self::FORMAT_BINARY, self::FORMAT_XML ) ) )
       throw new PListException( "format {$format} is not supported, use CFPropertyList::FORMAT_BINARY or CFPropertyList::FORMAT_XML" );
