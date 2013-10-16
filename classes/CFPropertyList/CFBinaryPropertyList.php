@@ -584,13 +584,12 @@ abstract class CFBinaryPropertyList {
   /**
    * „pack” a value (i.e. write the binary representation as big endian to a string) with the specified size
    * @param integer $nbytes The number of bytes to pack
-   * @param integer $int the integer value to pack
+   * @param integer $int The integer value to pack
    * @return string The packed value as string
    */
   public static function packItWithSize($nbytes,$int) {
     $formats = Array("C", "n", "N", "N");
     $format = $formats[$nbytes-1];
-    $ret = '';
 
     if($nbytes == 3) return substr(pack($format, $int), -3);
     return pack($format, $int);
