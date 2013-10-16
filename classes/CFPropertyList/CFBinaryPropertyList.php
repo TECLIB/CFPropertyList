@@ -335,11 +335,11 @@ abstract class CFBinaryPropertyList {
       if(strlen($buff = substr($this->content, $this->pos, $length * $this->objectRefSize)) != $length * $this->objectRefSize) throw IOException::readError("");
       $this->pos += $length * $this->objectRefSize;
 
-      $objects = unpack($this->objectRefSize == 1 ? "C*" : "n*", $buff);
+      $objects = self::unpackWithSize($this->objectRefSize, $buff);
 
       // now: read objects
       for($i=0;$i<$length;++$i) {
-        $object = $this->readBinaryObjectAt($objects[$i+1]+1,$this->objectRefSize);
+        $object = $this->readBinaryObjectAt($objects[$i+1]+1);
         $ary->add($object);
       }
     }
@@ -360,12 +360,12 @@ abstract class CFBinaryPropertyList {
     if($length != 0) {
       if(strlen($buff = substr($this->content, $this->pos, $length * $this->objectRefSize)) != $length * $this->objectRefSize) throw IOException::readError("");
       $this->pos += $length * $this->objectRefSize;
-      $keys = unpack(($this->objectRefSize == 1 ? "C*" : "n*"), $buff);
+      $keys = self::unpackWithSize($this->objectRefSize, $buff);
 
       // second: read object refs
       if(strlen($buff = substr($this->content, $this->pos, $length * $this->objectRefSize)) != $length * $this->objectRefSize) throw IOException::readError("");
       $this->pos += $length * $this->objectRefSize;
-      $objects = unpack(($this->objectRefSize == 1 ? "C*" : "n*"), $buff);
+      $objects = self::unpackWithSize($this->objectRefSize, $buff);
 
       // read real keys and objects
       for($i=0;$i<$length;++$i) {
@@ -584,16 +584,29 @@ abstract class CFBinaryPropertyList {
   /**
    * „pack” a value (i.e. write the binary representation as big endian to a string) with the specified size
    * @param integer $nbytes The number of bytes to pack
-   * @param integer $int the integer value to pack
+   * @param integer $int The integer value to pack
    * @return string The packed value as string
    */
   public static function packItWithSize($nbytes,$int) {
     $formats = Array("C", "n", "N", "N");
     $format = $formats[$nbytes-1];
-    $ret = '';
 
     if($nbytes == 3) return substr(pack($format, $int), -3);
     return pack($format, $int);
+  }
+
+  /**
+   * „unpack” multiple values of the specified size (i.e. get the integers from their binary representation) from a string
+   * @param integer $nbytes The number of bytes of each value to unpack
+   * @param integer $buff The string packed with integer values
+   * @return array The unpacked integers
+   */
+  public static function unpackWithSize($nbytes,$buff) {
+    $formats = Array("C*", "n*", "N*", "N*");
+    $format = $formats[$nbytes-1];
+
+    if($nbytes == 3) $buff = "\0" . implode("\0", str_split($buff, 3));
+    return unpack($format, $buff);
   }
 
   /**
