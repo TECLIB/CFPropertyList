@@ -339,7 +339,7 @@ abstract class CFBinaryPropertyList {
 
       // now: read objects
       for($i=0;$i<$length;++$i) {
-        $object = $this->readBinaryObjectAt($objects[$i+1]+1,$this->objectRefSize);
+        $object = $this->readBinaryObjectAt($objects[$i+1]+1);
         $ary->add($object);
       }
     }
