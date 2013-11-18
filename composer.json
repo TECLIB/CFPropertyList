@@ -27,5 +27,10 @@
         "psr-0": {
             "CFPropertyList\\": "classes/"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.x-dev"
+        }
     }
 }
