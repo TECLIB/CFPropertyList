@@ -390,7 +390,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
   public function toXML($formatted=false) {
     $domimpl = new DOMImplementation();
     // <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    $dtd = $domimpl->createDocumentType('plist', '-//Apple Computer//DTD PLIST 1.0//EN', 'http://www.apple.com/DTDs/PropertyList-1.0.dtd');
+    $dtd = $domimpl->createDocumentType('plist', '-//Apple//DTD PLIST 1.0//EN', 'http://www.apple.com/DTDs/PropertyList-1.0.dtd');
     $doc = $domimpl->createDocument(null, "plist", $dtd);
     $doc->encoding = "UTF-8";
 
