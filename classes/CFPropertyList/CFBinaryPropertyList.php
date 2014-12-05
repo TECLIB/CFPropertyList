@@ -395,7 +395,7 @@ abstract class CFBinaryPropertyList {
 
     $object_type = substr($buff, 0, 1);
     if($object_type != "0" && $object_length == 15) {
-      $object_length = $this->readBinaryObject($this->objectRefSize);
+      $object_length = $this->readBinaryObject();
       $object_length = $object_length->getValue();
     }
 
