@@ -319,6 +319,14 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
         case 'dict':
           $value = new $class();
           $this->import($n, $value);
+
+          if($value instanceof CFDictionary) {
+            $hsh = $value->getValue();
+            if(isset($hsh['CF$UID']) && count($hsh) == 1) {
+              $value = new CFUid($hsh['CF$UID']->getValue());
+            }
+          }
+
           break;
       }
 

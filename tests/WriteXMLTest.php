@@ -11,6 +11,7 @@ if(!defined('LIBDIR')) {
 
 if(!defined('WRITE_XML_DATA_FILE')) {
   define('WRITE_XML_DATA_FILE',__DIR__.'/binary.plist');
+  define('TEST_UID_XML_PLIST', __DIR__ . '/uid-list.xml');
 }
 
 require_once(LIBDIR.'/CFPropertyList.php');
@@ -68,6 +69,16 @@ class WriteXMLTest extends \PHPUnit_Framework_TestCase {
     $plist->parse($content);
   }
 
+  public
+  function testWriteUid() {
+    $plist = new CFPropertyList();
+    $dict = new CFDictionary();
+    $dict->add('test', new CFUid(1));
+    $plist->add($dict);
+
+    $plist1 = new CFPropertyList(TEST_UID_XML_PLIST);
+    $this->assertEquals($plist1->toXml(), $plist->toXml());
+  }
 }
 
 

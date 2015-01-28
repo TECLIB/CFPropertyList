@@ -11,6 +11,7 @@ if(!defined('LIBDIR')) {
 
 if(!defined('WRITE_BINARY_DATA_FILE')) {
   define('WRITE_BINARY_DATA_FILE',__DIR__.'/binary.plist');
+  define('TEST_UID_BPLIST', __DIR__ . '/uid-list.plist');
 }
 
 require_once(LIBDIR.'/CFPropertyList.php');
@@ -71,6 +72,15 @@ class WriteBinaryTest extends \PHPUnit_Framework_TestCase {
     $plist->parse($content);
   }
 
+  public function testWriteUid() {
+    $plist = new CFPropertyList();
+    $dict = new CFDictionary();
+    $dict->add('test', new CFUid(1));
+    $plist->add($dict);
+
+    $plist1 = new CFPropertyList(TEST_UID_BPLIST);
+    $this->assertEquals($plist1->toBinary(), $plist->toBinary());
+  }
 }
 
 

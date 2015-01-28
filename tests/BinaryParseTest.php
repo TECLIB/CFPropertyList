@@ -11,6 +11,7 @@ if(!defined('LIBDIR')) {
 
 if(!defined('TEST_BINARY_DATA_FILE')) {
   define('TEST_BINARY_DATA_FILE',__DIR__.'/binary-data.plist');
+  define('TEST_UID_BPLIST', __DIR__ . '/uid-list.plist');
 }
 
 require_once(LIBDIR.'/CFPropertyList.php');
@@ -105,6 +106,15 @@ class BinaryParseTest extends \PHPUnit_Framework_TestCase {
     }
 
     $this->fail('No exception thrown for invalid string!');
+  }
+
+  public function testUidPlist() {
+    $plist = new CFPropertyList(TEST_UID_BPLIST);
+    $val = $plist->toArray();
+    $this->assertEquals(array('test' => 1), $val);
+
+    $v = $plist->getValue()->getValue();
+    $this->assertTrue($v['test'] instanceof CFUid);
   }
 
 }

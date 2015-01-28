@@ -121,6 +121,19 @@ class CFString extends CFType {
   }
 }
 
+class CFUid extends CFType {
+  public
+  function toXML(DOMDocument $doc,$nodeName="") {
+    $obj = new CFDictionary(array('CF$UID' => new CFNumber($this->value)));
+    return $obj->toXml($doc);
+  }
+
+  public
+  function toBinary(CFBinaryPropertyList &$bplist) {
+    return $bplist->uidToBinary($this->value);
+  }
+}
+
 /**
  * Number Type of CFPropertyList
  * @author Rodney Rehm <rodney.rehm@medialize.de>

@@ -422,6 +422,10 @@ abstract class CFBinaryPropertyList {
       case '6': // unicode string (utf16be)
         $retval = $this->readBinaryUnicodeString($object_length);
         break;
+      case '8':
+        $num = $this->readBinaryInt($object_length);
+        $retval = new CFUid($num->getValue());
+        break;
       case 'a': // array
         $retval = $this->readBinaryArray($object_length);
         break;
@@ -890,6 +894,49 @@ abstract class CFBinaryPropertyList {
   protected function realToBinary($val) {
     $bdata = self::typeBytes("2", 3); // 2 is 0010, type indicator for reals
     return $bdata.strrev(pack("d", (float)$val));
+  }
+
+  public function uidToBinary($value) {
+    $saved_object_count = $this->writtenObjectCount++;
+
+    $val = "";
+
+    $nbytes = 0;
+    if($value > 0xFF) $nbytes = 1; // 1 byte integer
+    if($value > 0xFFFF) $nbytes += 1; // 4 byte integer
+    if($value > 0xFFFFFFFF) $nbytes += 1; // 8 byte integer
+    if($value < 0) $nbytes = 3; // 8 byte integer, since signed
+
+    $bdata = self::typeBytes("1000", $nbytes); // 1 is 0001, type indicator for integer
+    $buff = "";
+
+    if($nbytes < 3) {
+      if($nbytes == 0) $fmt = "C";
+      elseif($nbytes == 1) $fmt = "n";
+      else $fmt = "N";
+
+      $buff = pack($fmt, $value);
+    }
+    else {
+      if(PHP_INT_SIZE > 4) {
+        // 64 bit signed integer; we need the higher and the lower 32 bit of the value
+        $high_word = $value >> 32;
+        $low_word = $value & 0xFFFFFFFF;
+      }
+      else {
+        // since PHP can only handle 32bit signed, we can only get 32bit signed values at this point - values above 0x7FFFFFFF are
+        // floats. So we ignore the existance of 64bit on non-64bit-machines
+        if($value < 0) $high_word = 0xFFFFFFFF;
+        else $high_word = 0;
+        $low_word = $value;
+      }
+      $buff = pack("N", $high_word).pack("N", $low_word);
+    }
+
+    $val = $bdata.$buff;
+
+    $this->objectTable[$saved_object_count] = $val;
+    return $saved_object_count;
   }
 
   /**

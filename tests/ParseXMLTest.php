@@ -11,6 +11,7 @@ if(!defined('LIBDIR')) {
 
 if(!defined('TEST_XML_DATA_FILE')) {
   define('TEST_XML_DATA_FILE',__DIR__.'/xml-data.plist');
+  define('TEST_UID_XML_PLIST', __DIR__ . '/uid-list.xml');
 }
 
 require_once(LIBDIR.'/CFPropertyList.php');
@@ -113,6 +114,13 @@ class ParseXMLTest extends \PHPUnit_Framework_TestCase {
     $this->fail('No exception thrown for invalid string!');
   }
 
+  public function testUidPlist() {
+    $plist = new CFPropertyList(TEST_UID_XML_PLIST);
+    $val = $plist->toArray();
+    $this->assertEquals(array('test' => 1), $val);
+    $v = $plist->getValue()->getValue();
+    $this->assertTrue($v['test'] instanceof CFUid);
+  }
 }
 
 # eof
