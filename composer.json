@@ -6,7 +6,8 @@
     "homepage": "https://github.com/rodneyrehm/CFPropertyList",
     "license": "MIT",
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.3",
+        "ext-dom": "*"
     },
     "authors": [
         {
@@ -24,7 +25,12 @@
     },
     "autoload": {
         "psr-0": {
-            "CFPropertyList":"classes\/"
+            "CFPropertyList\\": "classes/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.x-dev"
         }
     }
 }
