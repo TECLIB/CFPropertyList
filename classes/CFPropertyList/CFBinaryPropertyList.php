@@ -43,30 +43,6 @@ abstract class CFBinaryPropertyList {
   protected $countObjects = 0;
 
   /**
-   * The length of all strings in the file (byte length, not character length)
-   * @var integer
-   */
-  protected $stringSize = 0;
-
-  /**
-   * The length of all ints in file (byte length)
-   * @var integer
-   */
-  protected $intSize = 0;
-
-  /**
-   * The length of misc objects (i.e. not integer and not string) in file
-   * @var integer
-   */
-  protected $miscSize = 0;
-
-  /**
-   * Number of object references in file (needed to calculate reference byte length)
-   * @var integer
-   */
-  protected $objectRefs = 0;
-
-  /**
    * Number of objects written during save phase; needed to calculate the size of the object table
    * @var integer
    */
@@ -290,21 +266,6 @@ abstract class CFBinaryPropertyList {
   }
 
   /**
-   * Count characters considering character set
-   * Trying to use MBString, Iconv - in that particular order.
-   * @param string $string the string to convert
-   * @param string $charset the charset the given string is currently encoded in
-   * @return integer The number of characters in that string
-   * @throws PListException on neither MBString, Iconv being available
-   */
-  public static function charsetStrlen($string,$charset="UTF-8") {
-    if(function_exists('mb_strlen')) return mb_strlen($string, $charset);
-    if(function_exists('iconv_strlen')) return iconv_strlen($string,$charset);
-
-    throw new PListException('neither iconv nor mbstring supported. how are we supposed to work on strings here?');
-  }
-
-  /**
    * Read a unicode string value, coded as UTF-16BE
    * @param integer $length The length (in bytes) of the string value
    * @return CFString The string value, utf8 encoded
@@ -451,10 +412,6 @@ abstract class CFBinaryPropertyList {
   public function parseBinaryString() {
     $this->uniqueTable = Array();
     $this->countObjects = 0;
-    $this->stringSize = 0;
-    $this->intSize = 0;
-    $this->miscSize = 0;
-    $this->objectRefs = 0;
 
     $this->writtenObjectCount = 0;
     $this->objectTable = Array();
@@ -666,20 +623,15 @@ abstract class CFBinaryPropertyList {
   protected function uniqueAndCountValues($value) {
     // no uniquing for other types than CFString and CFData
     if($value instanceof CFNumber) {
-      $val = $value->getValue();
-      if(intval($val) == $val && !is_float($val) && strpos($val,'.') === false) $this->intSize += self::bytesInt($val);
-      else $this->miscSize += 9; // 9 bytes (8 + marker byte) for real
       $this->countObjects++;
       return;
     }
     elseif($value instanceof CFDate) {
-      $this->miscSize += 9; // since date in plist is real, we need 9 byte (8 + marker byte)
       $this->countObjects++;
       return;
     }
     elseif($value instanceof CFBoolean) {
       $this->countObjects++;
-      $this->miscSize += 1;
       return;
     }
     elseif($value instanceof CFArray) {
@@ -687,12 +639,9 @@ abstract class CFBinaryPropertyList {
       foreach($value as $v) {
         ++$cnt;
         $this->uniqueAndCountValues($v);
-        $this->objectRefs++; // each array member is a ref
       }
 
       $this->countObjects++;
-      $this->intSize += self::bytesSizeInt($cnt);
-      $this->miscSize++; // marker byte for array
       return;
     }
     elseif($value instanceof CFDictionary) {
@@ -700,27 +649,19 @@ abstract class CFBinaryPropertyList {
       foreach($value as $k => $v) {
         ++$cnt;
         if(!isset($this->uniqueTable[$k])) {
-          $this->uniqueTable[$k] = 0;
-          $len = self::binaryStrlen($k);
-          $this->stringSize += $len + 1;
-          $this->intSize += self::bytesSizeInt(self::charsetStrlen($k,'UTF-8'));
+          $this->uniqueTable[$k] = 0;				
         }
 
-        $this->objectRefs += 2; // both, key and value, are refs
         $this->uniqueTable[$k]++;
         $this->uniqueAndCountValues($v);
       }
 
       $this->countObjects++;
-      $this->miscSize++; // marker byte for dict
-      $this->intSize += self::bytesSizeInt($cnt);
       return;
     }
     elseif($value instanceOf CFData) {
       $val = $value->getValue();
       $len = strlen($val);
-      $this->intSize += self::bytesSizeInt($len);
-      $this->miscSize += $len + 1;
       $this->countObjects++;
       return;
     }
@@ -728,9 +669,6 @@ abstract class CFBinaryPropertyList {
 
     if(!isset($this->uniqueTable[$val])) {
       $this->uniqueTable[$val] = 0;
-      $len = self::binaryStrlen($val);
-      $this->stringSize += $len + 1;
-      $this->intSize += self::bytesSizeInt(self::charsetStrlen($val,'UTF-8'));
     }
     $this->uniqueTable[$val]++;
   }
@@ -742,10 +680,6 @@ abstract class CFBinaryPropertyList {
   public function toBinary() {
     $this->uniqueTable = Array();
     $this->countObjects = 0;
-    $this->stringSize = 0;
-    $this->intSize = 0;
-    $this->miscSize = 0;
-    $this->objectRefs = 0;
 
     $this->writtenObjectCount = 0;
     $this->objectTable = Array();
@@ -759,9 +693,6 @@ abstract class CFBinaryPropertyList {
 
     $this->countObjects += count($this->uniqueTable);
     $this->objectRefSize = self::bytesNeeded($this->countObjects);
-    $file_size = $this->stringSize + $this->intSize + $this->miscSize + $this->objectRefs * $this->objectRefSize + 40;
-    $offset_size = self::bytesNeeded($file_size);
-    $table_offset = $file_size - 32;
 
     $this->objectTable = Array();
     $this->writtenObjectCount = 0;
@@ -777,10 +708,12 @@ abstract class CFBinaryPropertyList {
       $object_offset += strlen($this->objectTable[$i]);
     }
 
+    $table_offset = strlen($binary_str);
+    $offset_size = self::bytesNeeded(strlen($binary_str));
+
     for($i=0;$i<count($offsets);++$i) {
       $binary_str .= self::packItWithSize($offset_size, $offsets[$i]);
     }
-
 
     $binary_str .= pack("x6CC", $offset_size, $this->objectRefSize);
     $binary_str .= pack("x4N", $this->countObjects);
@@ -788,22 +721,6 @@ abstract class CFBinaryPropertyList {
     $binary_str .= pack("x4N", $table_offset);
 
     return $binary_str;
-  }
-
-  /**
-   * Counts the number of bytes the string will have when coded; utf-16be if non-ascii characters are present.
-   * @param string $val The string value
-   * @return integer The length of the coded string in bytes
-   */
-  protected static function binaryStrlen($val) {
-    for($i=0;$i<strlen($val);++$i) {
-      if(ord($val{$i}) >= 128) {
-        $val = self::convertCharset($val, 'UTF-8', 'UTF-16BE');
-        return strlen($val);
-      }
-    }
-
-    return strlen($val);
   }
 
   /**
@@ -827,7 +744,7 @@ abstract class CFBinaryPropertyList {
       }
 
       if($utf16) {
-        $bdata = self::typeBytes("6", mb_strlen($val,'UTF-8')); // 6 is 0110, unicode string (utf16be)
+        $bdata = self::typeBytes("6", CFString::strlen($val)); // 6 is 0110, unicode string (utf16be)
         $val = self::convertCharset($val, 'UTF-8', 'UTF-16BE');
         $this->objectTable[$saved_object_count] = $bdata.$val;
       }

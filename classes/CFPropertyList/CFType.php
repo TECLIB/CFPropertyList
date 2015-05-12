@@ -119,6 +119,30 @@ class CFString extends CFType {
   public function toBinary(CFBinaryPropertyList &$bplist) {
     return $bplist->stringToBinary($this->value);
   }
+	
+  public static function strlen( $val ) {
+    // Just like CFStringGetLength: number of UTF-16 code pairs
+    $count = 0;
+    for ( $i = 0; $i < strlen( $val ); $i ) {
+      if ( ( ord( $val[$i] ) & 0b11110000 ) == 0b11110000 ) {
+        $count += 2;
+        $i += 4;
+      }
+      else if ( ( ord( $val[$i] ) & 0b11100000 ) == 0b11100000 ) {
+        $count += 1;
+        $i += 3;
+      }
+      else if ( ( ord( $val[$i] ) & 0b11000000 ) == 0b11000000 ) {
+        $count += 1;
+        $i += 2;
+      }
+      else if ( ( ord( $val[$i] ) >> 7 ) == 0b00000000 ) {
+        $count += 1;
+        $i += 1;
+      }
+    }
+    return $count;
+  }
 }
 
 /**
