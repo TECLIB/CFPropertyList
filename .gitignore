@@ -5,3 +5,4 @@ vendor
 .foundation
 Makefile
 .DS_Store
+.vscode
