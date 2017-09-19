@@ -29,6 +29,7 @@ script:
   - php examples/example-read-03.php
   - php examples/example-read-04.php
   - php examples/example-read-05.php
+  - php examples/example-read-06.php
 
 
 cache:
