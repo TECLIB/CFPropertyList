@@ -2,20 +2,6 @@
 
 namespace CFPropertyList;
 
-error_reporting(E_ALL|E_STRICT);
-ini_set('display_errors','on');
-
-if(!defined('LIBDIR')) {
-  define('LIBDIR',__DIR__.'/../classes/CFPropertyList');
-}
-
-if(!defined('TEST_XML_DATA_FILE')) {
-  define('TEST_XML_DATA_FILE',__DIR__.'/xml-data.plist');
-  define('TEST_UID_XML_PLIST', __DIR__ . '/uid-list.xml');
-}
-
-require_once(LIBDIR.'/CFPropertyList.php');
-
 class ParseXMLTest extends \PHPUnit\Framework\TestCase {
   public function testParse() {
     $plist = new CFPropertyList(TEST_XML_DATA_FILE);
@@ -91,18 +77,13 @@ class ParseXMLTest extends \PHPUnit\Framework\TestCase {
     catch(\DOMException $e) {
       $catched = true;
     }
-    catch(\PHPUnit\Framework\Error\Warning $e) {
-      // For PHPUnit >= 6
-      $catched = true;
-      $this->assertEquals($e->getMessage(), "DOMDocument::loadXML(): Start tag expected, '<' not found in Entity, line: 1");
-    }
     catch(\PHPUnit_Framework_Error $e) {
-      // for PHPUnit < 6
       $catched = true;
-      $this->assertEquals($e->getMessage(), "DOMDocument::loadXML(): Start tag expected, '<' not found in Entity, line: 1");
     }
 
-    $this->assertTrue($catched, 'No exception thrown for invalid string!');
+    if($catched == false) {
+      $this->fail('No exception thrown for invalid string!');
+    }
 
     $catched = false;
     try {
@@ -110,20 +91,13 @@ class ParseXMLTest extends \PHPUnit\Framework\TestCase {
       $plist->parse('<plist>');
     }
     catch(PListException $e) {
-      $catched = true;
-    }
-    catch(\PHPUnit\Framework\Error\Warning $e) {
-      // For PHPUnit >= 6
-      $catched = true;
-      $this->assertEquals($e->getMessage(), "DOMDocument::loadXML(): Premature end of data in tag plist line 1 in Entity, line: 1");
+      return;
     }
     catch(\PHPUnit_Framework_Error $e) {
-      // for PHPUnit < 6
-      $catched = true;
-      $this->assertEquals($e->getMessage(), "DOMDocument::loadXML(): Premature end of data in tag plist line 1 in Entity, line: 1");
+      return;
     }
 
-    $this->assertTrue($catched, 'No exception thrown for invalid string!');
+    $this->fail('No exception thrown for invalid string!');
   }
 
   public function testUidPlist() {

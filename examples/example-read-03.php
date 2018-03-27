@@ -14,7 +14,7 @@ ini_set( 'display_errors', 'on' );
 /**
  * Require CFPropertyList
  */
-require_once(__DIR__.'/../classes/CFPropertyList/CFPropertyList.php');
+require_once(__DIR__.'/../vendor/autoload.php');
 
 
 /*

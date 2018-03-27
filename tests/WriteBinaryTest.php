@@ -2,20 +2,6 @@
 
 namespace CFPropertyList;
 
-error_reporting(E_ALL|E_STRICT);
-ini_set('display_errors','on');
-
-if(!defined('LIBDIR')) {
-  define('LIBDIR',__DIR__.'/../classes/CFPropertyList');
-}
-
-if(!defined('WRITE_BINARY_DATA_FILE')) {
-  define('WRITE_BINARY_DATA_FILE',__DIR__.'/binary.plist');
-  define('TEST_UID_BPLIST', __DIR__ . '/uid-list.plist');
-}
-
-require_once(LIBDIR.'/CFPropertyList.php');
-
 class WriteBinaryTest extends \PHPUnit\Framework\TestCase {
   public function testWriteFile() {
     $plist = new CFPropertyList();

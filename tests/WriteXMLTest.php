@@ -5,17 +5,6 @@ namespace CFPropertyList;
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors','on');
 
-if(!defined('LIBDIR')) {
-  define('LIBDIR',__DIR__.'/../classes/CFPropertyList');
-}
-
-if(!defined('WRITE_XML_DATA_FILE')) {
-  define('WRITE_XML_DATA_FILE',__DIR__.'/binary.plist');
-  define('TEST_UID_XML_PLIST', __DIR__ . '/uid-list.xml');
-}
-
-require_once(LIBDIR.'/CFPropertyList.php');
-
 class WriteXMLTest extends \PHPUnit\Framework\TestCase {
   public function testWriteFile() {
     $plist = new CFPropertyList();

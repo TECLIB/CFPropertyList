@@ -15,7 +15,7 @@ ini_set( 'display_errors', 'on' );
 /**
  * Require CFPropertyList
  */
-require_once(__DIR__.'/../classes/CFPropertyList/CFPropertyList.php');
+require_once(__DIR__.'/../vendor/autoload.php');
 
 
 /*
@@ -40,7 +40,7 @@ $structure = array(
   'Kids Names' => array( 'John', 'Kyra' ),
 );
 
-$td = new CFTypeDetector();  
+$td = new CFTypeDetector();
 $guessedStructure = $td->toCFType( $structure );
 $plist->add( $guessedStructure );
 
