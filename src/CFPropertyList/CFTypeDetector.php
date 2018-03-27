@@ -1,4 +1,20 @@
 <?php
+/**
+ *Base-Class of all CFTypes used by CFPropertyList.
+ * {@link http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html Property Lists}
+ * @author Rodney Rehm <rodney.rehm@medialize.de>
+ * @author Christian Kruse <cjk@wwwtech.de>
+ * @package plist
+ * @subpackage plist.types
+ * @version $Id$
+ * @example example-create-01.php Using the CFPropertyList API
+ * @example example-create-02.php Using CFPropertyList::guess()
+ * @example example-create-03.php Using CFPropertyList::guess() with {@link CFDate} and {@link CFData}
+ */
+
+
+namespace CFPropertyList;
+use \DateTime, \Iterator;
 
  /**
   * CFTypeDetector
@@ -11,11 +27,7 @@
   * @example example-create-03.php Using {@link CFTypeDetector} with {@link CFDate} and {@link CFData}
   * @example example-create-04.php Using and extended {@link CFTypeDetector}
   */
-
-namespace CFPropertyList;
-use \DateTime, \Iterator;
-
-class CFTypeDetector {
+  class CFTypeDetector {
 
   /**
    * flag stating if all arrays should automatically be converted to {@link CFDictionary}

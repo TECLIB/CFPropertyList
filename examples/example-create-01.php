@@ -14,7 +14,7 @@ ini_set( 'display_errors', 'on' );
 /**
  * Require CFPropertyList
  */
-require_once(__DIR__.'/../classes/CFPropertyList/CFPropertyList.php');
+require_once(__DIR__.'/../vendor/autoload.php');
 
 
 /*
@@ -23,7 +23,7 @@ require_once(__DIR__.'/../classes/CFPropertyList/CFPropertyList.php');
 $plist = new CFPropertyList();
 
 /*
- * Manuall Create the sample.xml.plist 
+ * Manuall Create the sample.xml.plist
  */
 // the Root element of the PList is a Dictionary
 $plist->add( $dict = new CFDictionary() );

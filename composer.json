@@ -23,8 +23,8 @@
         "source": "https://github.com/rodneyrehm/CFPropertyList"
     },
     "autoload": {
-        "psr-0": {
-            "CFPropertyList":"classes\/"
+        "psr-4": {
+            "CFPropertyList\\": "src/CFPropertyList/"
         }
     },
     "require-dev": {

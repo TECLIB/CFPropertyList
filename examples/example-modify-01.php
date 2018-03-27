@@ -14,7 +14,7 @@ ini_set( 'display_errors', 'on' );
 /**
  * Require CFPropertyList
  */
-require_once(__DIR__.'/../classes/CFPropertyList/CFPropertyList.php');
+require_once(__DIR__.'/../vendor/autoload.php');
 
 
 // load an existing list
@@ -27,7 +27,7 @@ foreach( $plist->getValue(true) as $key => $value )
 	{
 		$value->setValue( 'Mars' );
 	}
-	
+
 	if( $value instanceof \Iterator )
 	{
 		// The value is a CFDictionary or CFArray, you may continue down the tree

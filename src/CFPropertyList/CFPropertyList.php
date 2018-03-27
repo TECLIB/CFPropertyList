@@ -19,15 +19,6 @@ namespace CFPropertyList;
 use \Iterator, \DOMDocument, \DOMException, DOMImplementation, DOMNode;
 
 /**
- * Require IOException, PListException, CFType and CFBinaryPropertyList
- */
-require_once(__DIR__.'/IOException.php');
-require_once(__DIR__.'/PListException.php');
-require_once(__DIR__.'/CFType.php');
-require_once(__DIR__.'/CFBinaryPropertyList.php');
-require_once(__DIR__.'/CFTypeDetector.php');
-
-/**
  * Property List
  * Interface for handling reading, editing and saving Property Lists as defined by Apple.
  * @author Rodney Rehm <rodney.rehm@medialize.de>

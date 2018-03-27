@@ -14,10 +14,10 @@ ini_set( 'display_errors', 'on' );
 /**
  * Require CFPropertyList
  */
-require_once(__DIR__.'/../classes/CFPropertyList/CFPropertyList.php');
+require_once(__DIR__.'/../vendor/autoload.php');
 
 class DemoDetector extends CFTypeDetector {
-  
+
   public function toCFType($value) {
     if( $value instanceof PListException ) {
       return new CFString( $value->getMessage() );
@@ -25,7 +25,7 @@ class DemoDetector extends CFTypeDetector {
 
     return parent::toCFType($value);
   }
-  
+
 }
 
 /*
@@ -49,7 +49,7 @@ $structure = array(
  */
 try {
   $plist = new CFPropertyList();
-  $td = new CFTypeDetector();  
+  $td = new CFTypeDetector();
   $guessedStructure = $td->toCFType( $structure );
   $plist->add( $guessedStructure );
   $plist->saveXML( __DIR__.'/example-create-04.xml.plist' );
@@ -79,7 +79,7 @@ catch( PListException $e ) {
  */
 try {
   $plist = new CFPropertyList();
-  $td = new DemoDetector();  
+  $td = new DemoDetector();
   $guessedStructure = $td->toCFType( $structure );
   $plist->add( $guessedStructure );
   $plist->saveXML( __DIR__.'/example-create-04.xml.plist' );
