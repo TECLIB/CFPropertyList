@@ -16,7 +16,7 @@ if(!defined('WRITE_BINARY_DATA_FILE')) {
 
 require_once(LIBDIR.'/CFPropertyList.php');
 
-class WriteBinaryTest extends \PHPUnit_Framework_TestCase {
+class WriteBinaryTest extends \PHPUnit\Framework\TestCase {
   public function testWriteFile() {
     $plist = new CFPropertyList();
     $dict = new CFDictionary();
