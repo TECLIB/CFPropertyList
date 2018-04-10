@@ -1,0 +1,85 @@
+---
+layout: default
+---
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-24 title-page">
+                {% assign name = site.github.project_title | replace: "flyve-mdm-", "" %}
+                {% assign name = name | replace: "-", " " %}
+                <span class="color-type-primary">{{ name }}</span> <span class="color-type-secondary"> {{ site.github.latest_release.tag_name }} </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p class="goHome container">
+  {% if page.howtos %}
+    <a href="{{ "wiki" | absolute_url }}">
+  {% else %}
+    <a href="{{ "news" | absolute_url }}">
+  {% endif %}
+      <span class="glyph glyph-back" aria-hidden="true"></span> &nbsp; Back to index
+  </a>
+</p>
+
+<article class="post container" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <div class="row">
+      <div class="col-xs-24">
+        <h1 class="post-title" itemprop="name headline">{{ page.title | escape }}</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-7">
+        <p class="post-meta">
+          <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+            {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
+            {{ page.date | date: date_format }}
+          </time>
+          {% if page.author %}
+            • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span>
+          {% endif %}</p>
+      </div>
+
+      <div class="col-xs-17">
+        <div class="social-networks">
+
+          {% if page.redditURL %}
+            <div class="reddit">
+              <script type="text/javascript">
+                reddit_url = "{{page.redditURL}}"
+              </script>
+              <script type="text/javascript" src="//www.redditstatic.com/button/button1.js"></script>
+            </div>
+          {% endif %}
+
+          {% if page.hackerNewsURL %}
+            <div class="hacker-news">
+              <a 
+                href="http://news.ycombinator.com/submit" 
+                class="hn-share-button" 
+                data-title="{{page.title}}"
+                data-url="{{ page.hackerNewsURL }}"> Vote on HN </a>
+              <script src="//hnbutton.appspot.com/static/hn.min.js"></script>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+  <div class="post-content row" itemprop="articleBody">
+    {{ content }}
+  </div>
+
+  <blockquote>
+    Have feedback on this post? Let <a href="https://twitter.com/{{ site.twitter }}">@{{ site.twitter }}</a> know on Twitter. 
+    <br/>
+    <br/>
+    Need help or found a bug? <a href="{{ '/contact' | absolute_url }}">Contact us</a>. 
+  </blockquote>
+  
+</article>

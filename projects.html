@@ -1,0 +1,39 @@
+---
+layout: page
+namePage: projects
+---
+
+
+{% assign my_counter = 0 %} 
+{% for repositorie in site.github.public_repositories %}
+
+    {% assign inWhitelist = false %}
+    {% for whitelist in site.data.whitelist_TECLIB %}
+        {% if repositorie.name == whitelist %}
+            {% assign inWhitelist = true %}
+        {% endif %}
+    {% endfor %}
+
+    {% capture url_repositorie %}https://{{repositorie.owner.login}}.github.io/{{repositorie.name}}/{% endcapture %}
+    {% assign modulo = my_counter | modulo: 2 %}
+    {% assign my_counter = my_counter | plus: 1 %}
+    
+    {% if modulo == 0 %}
+        <div class="jumbotron theme-light">
+        {% else %}
+            <div class="jumbotron theme-default">
+    {% endif %}
+        <div class="container product">
+            {% assign name = repositorie.name | replace: "flyve-mdm-", "" %}   
+            {% assign name = name | replace: "-", " " %}
+            <h2>{{ name }}</h2>
+            <p>{{ repositorie.description }}</p>
+            {% if inWhitelist %}
+                <a class="btn btn-lg btn-primary" href="{{ url_repositorie }}" role="button">Visit website</a>
+                <a class="btn btn-lg btn-secondary" href="{{ repositorie.html_url }}" role="button">View on GitHub</a>
+            {% else %}
+                <a class="btn btn-lg btn-primary" href="{{ repositorie.html_url }}" role="button">View on GitHub</a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,19 @@
+footer {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  height: 72px;
+  justify-content: center;
+  position: absolute;
+  text-align: right;
+  white-space: nowrap;
+  width: 100%;
+
+  h4 {
+    padding-top: 8px;
+
+    img {
+      width: 80px;
+    }
+  }
+}

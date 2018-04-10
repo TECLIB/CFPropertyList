@@ -1,0 +1,73 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {% assign name = site.github.project_title | replace: "flyve-mdm-", "" %}   
+  {% assign name = name | replace: "-", " " %}   
+
+  {% if page.layout == 'post' %}
+    {% assign title = page.title %}
+    <meta property="og:type" content="article" />
+    <meta property="article:tag" content="{{ page.categories | join: ", " }}" />
+    {% else %}
+      {% assign title = name%}
+      <meta property="og:type" content="website" />
+  {% endif %}
+  
+  {% if page.namePage == 'screenshots' %}
+    <link rel="stylesheet" href="{{ "/css/screenshots.css" | absolute_url }}">
+  {% endif %}
+  
+  <title>{{ title }}</title>
+  <meta property="og:title" content="{{ title }}" />
+  <meta property="og:site_name" content="{{ name }}"/>
+
+  <meta property="og:image" content="{{ 'images/logo2.png' | absolute_url }}" />
+
+  <meta name="description" content="{{ page.excerpt | default: site.github.project_tagline | strip_html | normalize_whitespace | truncate: 160 | escape }}">
+  <meta name="og:description" content="{{ page.excerpt | default: site.github.project_tagline | strip_html | normalize_whitespace | truncate: 160 | escape }}">
+
+  <meta name="theme-color" content="#158784">
+
+  {% if page.layout == 'coverage' %}
+    <link rel="stylesheet" href="{{ "/css/coverage.css" | absolute_url }}">
+  {% endif %}
+  <link rel="stylesheet" href="{{ "/css/flyve-mdm.min.css" | absolute_url }}">
+  <link rel="stylesheet" href="{{ "/css/main.css" | absolute_url }}">
+  <link rel="stylesheet" href="{{ 'css/syntax.css' | absolute_url }}" /> 
+  <link rel="icon" href="http://www.teclib-edition.com/wp-content/uploads/2016/02/favicon-teclib.fav_-1.png">
+
+  {% if page.layout == 'jazzy' %}
+    <link rel="stylesheet" href="{{ 'css/jazzy.css' | absolute_url }}" /> 
+    <link rel="stylesheet" href="{{ 'css/highlight.css' | absolute_url }}" /> 
+    <script src="{{ "/js/jazzy.js" | absolute_url }}" defer></script>
+  {% endif %}
+
+  <link rel="canonical" href="{{ page.url | replace:'index.html','' | absolute_url }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title | escape }}" href="{{ "/feed.xml" | absolute_url }}">
+  
+  <link rel="manifest" href="{{ "/manifest.json" | absolute_url }}">
+  
+  <Link rel = "apple-touch-icon" href = "{{ site.url }}{{ site.baseurl }}/apple-touch-icon.png">
+  <link rel="apple-touch-startup-image" href="{{ site.url }}{{ site.baseurl }}/images/logo2.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  {% assign name = name | replace: "android", " " %} 
+  {% assign name = name | replace: "ios", " " %} 
+  {% assign name = name | replace: "blackberry", " " %} 
+  {% assign name = name | replace: "windows", " " %} 
+
+  <meta name="apple-mobile-web-app-title" content="{{name}}">
+  
+
+  {% if jekyll.environment == 'production' and site.google_analytics %}
+  {% include google-analytics.html %}
+  {% endif %}
+  <script src="{{ "/js/jquery.min.js" | absolute_url }}"></script>
+  <script 
+    src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js" 
+    data-apikey="fab38c004e4e4cf378f09b64bf2929f6"
+  ></script> 
+</head>

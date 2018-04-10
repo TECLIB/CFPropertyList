@@ -1,0 +1,24 @@
+language: ruby
+rvm:
+- 2.3.3
+
+branches:
+  only:
+  - gh-pages
+  - /.*/
+
+install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install 8.5
+  - npm install
+  - bundle install
+
+script: npm test
+
+env:
+  global:
+  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true # speeds up installation of html-proofer
+
+sudo: false 
+
+notifications:
+  webhooks: https://hooks.aethonan.pro/travisci/-1001061475099/
