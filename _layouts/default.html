@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+
+  {% include head.html %}
+
+  <body>
+
+
+      {% include header.html %}
+
+      {{ content }}
+
+      <a href="#top" class="back-to-top">
+          <i class="glyph glyph-up"></i>
+          <span class="sr-only">Back to top</span>
+      </a>
+      <img src="{{ 'images/logo2.png' | absolute_url }}" class="logo hide" alt="logo hidden" >
+
+      {% include footer.html %}   
+
+
+  </body>
+  
+  <script src="{{ "/js/bootstrap.min.js" | absolute_url }}"></script>
+  <script src="{{ "/js/app.js" | absolute_url }}"></script>
+
+  <script>
+        if('serviceWorker' in navigator) {
+          navigator.serviceWorker
+            .register('{{ "/sw.js" | absolute_url }}')
+            .then(function() { console.log("Service Worker Registered") })
+        }
+  </script>
+  
+</html>

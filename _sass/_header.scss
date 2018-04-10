@@ -1,0 +1,49 @@
+header {
+  .navbar-nav {
+
+    img {
+      vertical-align: middle;
+      width: 50px;
+    }
+  }
+
+  @media (max-width: 1084px) {
+    .logo {
+      height: 30px;
+      margin-top: -1.5px;
+    }
+  }
+
+  @media (min-width: 1084px) {
+    .logo {
+      height: 50px;
+      margin-top: -11px;
+    }
+  }
+}
+
+.modal-body {
+  $size: 15px;
+  font-size: $size;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: $size * 1.3;
+    font-weight: bold;
+    padding: 10px 0;
+  }
+
+  h1 {
+    font-size: $size * 1.8;
+  }
+}
+
+.title-page {
+  font-family: 'Segoe UI Light', 'Segoe UI', 'Selawik Light', Tahoma, Verdana, Arial, sans-serif;
+  font-size: 2.5rem;
+  padding: 10px 0;
+}

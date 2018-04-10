@@ -1,0 +1,7 @@
+files:
+  ignore:
+    - 'sass/vendor/**/*.*' 
+    - 'css/jazzy.scss' 
+    - 'css/syntax.css'
+    - 'css/highlight.scss' 
+    - 'node_modules/**'

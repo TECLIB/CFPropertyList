@@ -1,0 +1,31 @@
+{
+  "name": "fastlane-plugin-xcov_report",
+  "version": "1.0.0",
+  "description": "Branch created with the intention of functioning as an introduction web site of the project, a small point of entry where anyone can find out what it is about and to be able to get relevant information.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flyve-mdm/fastlane-plugin-xcov_report.git"
+  },
+  "sasslintConfig": ".sass-lint.yml",
+  "scripts": {
+    "test-sass": "./node_modules/.bin/sass-lint --config .sass-lint.yml '**/*.scss' --verbose --no-exit",
+    "test-js": "./node_modules/.bin/eslint js/*.js",
+    "test-yaml": "ci/yamllint.sh",
+    "test-site": "ci/tets-jekyll.sh",
+    "test": "npm run test-sass & npm run test-js & npm run test-yaml & npm run test-site"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/flyve-mdm/fastlane-plugin-xcov_report/issues"
+  },
+  "homepage": "https://github.com/flyve-mdm/fastlane-plugin-xcov_report#readme",
+  "devDependencies": {
+    "eslint": "^4.7.2",
+    "eslint-config-google": "^0.9.1",
+    "htmlhint": "^0.9.13",
+    "sass-lint": "^1.11.1",
+    "yaml-lint": "^1.0.0"
+  }
+}

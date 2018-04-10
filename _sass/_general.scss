@@ -1,0 +1,39 @@
+$white: #fff;
+
+html {
+  min-height: 100%;
+  position: relative;
+}
+
+body {
+  margin: 0 0 72px;
+}
+
+code {
+  white-space: pre;
+}
+
+hr {
+  margin: 20px 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+.jumbotron {
+
+  &.theme-default {
+    background-color: $white;
+  }
+
+  &.theme-dark {
+    h3 {
+      padding-top: 0;
+    }
+  }
+}
+
+.article-howtos {
+  margin-left: 40px;
+}

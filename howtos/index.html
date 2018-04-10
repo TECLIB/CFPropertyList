@@ -1,0 +1,19 @@
+---
+layout: container
+---
+
+<h2>How tos</h2>
+
+{% assign articles = site.posts %}
+{% for article in articles %}
+    {% if article.howtos %}
+        <div class="article-howtos">
+            <h3>
+                <a class="post-link" href="{{ article.url | absolute_url }}">{{ article.title | escape }}</a>
+                <p>
+                    {{ article.description }}
+                </p>
+            </h3>
+        </div>
+    {% endif %}
+{% endfor %}

@@ -1,0 +1,111 @@
+title: CFPropertyList
+email: ml-flyvemdm@teclib.com
+twitter: teclib
+baseurl: "/CFPropertyList"
+url: "https://teclib.github.io"   
+image: https://teclib.github.io/CFPropertyList/images/logo2.png 
+
+# Build settings
+markdown: kramdown
+
+plugins:
+  - jekyll-github-metadata
+  - jekyll-feed
+  - jekyll-sitemap
+
+repository: TECLIB/CFPropertyList
+
+sass:
+    style: compressed
+
+prose:
+
+  rooturl: '_posts' 
+  
+  ignore: 
+    - .keep
+
+  media: "images"
+
+  metadata:
+    _posts:
+      - name: "category"
+        field:
+          element: "hidden"
+          value: "blog"
+      - name: "layout"
+        field:
+          element: "hidden"
+          value: "post"
+      - name: "title"
+        field:
+          element: "text"
+          label: "Title"
+          value: ""
+      - name: "published"
+        field:
+          element: "checkbox"
+          label: "Published"
+          value: false
+      - name: "hackerNewsURL"
+        field:
+          element: "text" 
+          label: Hacker News URL
+          value: ""
+      - name: "redditURL"
+        field:
+          element: "text"
+          label: Reddit URL
+          value: ""
+
+    _posts/static:
+      - name: "layout"
+        field:
+          element: "hidden"
+          value: "post"
+      - name: "title"
+        field:
+          element: "text"
+          label: "Title"
+          value: ""
+      - name: "permalink"
+        field:
+          element: "text"
+          label: "Permalink"
+          value: ""
+      - name: "howtos"
+        field:
+          element: "checkbox"
+          label: "howtos"
+          value: false
+      - name: "published"
+        field:
+          element: "checkbox"
+          label: "Published"
+          value: false
+      - name: "description"
+        field:
+          element: "textarea"
+          label: "Description"
+      - name: "hackerNewsURL"
+        field:
+          element: "text"
+          label: Hacker News URL
+          value: ""
+      - name: "redditURL"
+        field:
+          element: "text" 
+          label: Reddit URL
+          value: ""
+
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/

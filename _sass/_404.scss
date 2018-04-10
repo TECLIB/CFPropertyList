@@ -1,0 +1,15 @@
+$light-gray: #eee;
+
+.page-not-found {
+  text-align: center;
+
+  h1 {
+    font-size: 12rem;
+  }
+
+  p {
+    border-bottom: 1px solid $light-gray;
+    display: inline-block;
+    padding-bottom: 20px;
+  }
+}
