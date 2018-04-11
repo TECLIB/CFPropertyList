@@ -1,0 +1,46 @@
+repository:
+  name: CFPropertyList
+  description: PHP Implementation of Apple's PList (binary and xml)
+  homepage: http://teclib.github.io/CFPropertyList/
+  topics: apple, plist
+  private: false
+  has_issues: true
+  has_wiki: false
+  has_downloads: true
+  default_branch: develop
+  allow_squash_merge: true
+  allow_merge_commit: false
+  allow_rebase_merge: true
+labels:
+  - name: bug
+    color: f44336
+  - name: build
+    color: 795548
+  - name: ci
+    color: fbca04
+  - name: documentation
+    color: 607d8b
+  - name: duplicate
+    color: 9e9e9e
+  - name: feature
+    color: 3f51b5
+  - name: hacktoberfest
+    color: ff625f
+  - name: invalid
+    color: cddc39
+  - name: performance
+    color: 009688
+  - name: question
+    color: ff5722
+  - name: refactor
+    color: 9c27b0
+  - name: style
+    color: 2196f3
+  - name: test
+    color: 8bc34a
+  - name: wontfix
+    color: ffffff
+  - name: help wanted
+    color: 33aa3f
+  - name: good first issue
+    color: 7057ff
