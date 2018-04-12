@@ -1,0 +1,90 @@
+---
+layout: home
+---
+<div class="jumbotron theme-default">
+    <div class="container">
+      <div class="type-h2">
+        PHP implementation of Apple's PropertyList
+      </div>
+      <br/>
+      <p>
+        CFPropertyList can handle both XML and binary PropertyLists. 
+        It offers functionality to easily convert data between worlds, e.g. recalculating timestamps from unix epoch to apple epoch and vice versa. 
+        A feature to automagically create (guess) the plist structure from a normal PHP data structure will help you dump your data to plist in no time.
+      </p>
+      <br />
+    </div>
+</div>
+
+<section id="instructions">
+  <div class="jumbotron theme-dark">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-24 text-center">
+          <h3>Requirements & Limitations</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="jumbotron theme-light">
+    <div class="container">
+      <div class="row">
+        <br class="visible-xs-inline-block visible-sm-inline-block"/>
+        
+          <div class="type-h3 padding-h0">
+            CFPropertyList requires the following to work properly
+          </div>
+          <br />
+          <ul>
+            <li>
+                PHP5.3 (as of CFPropertyList 2.0)
+            </li>
+            <li>
+                Either <a href="http://php.net/mbstring" target="blank">MBString</a> or <a href="http://php.net/iconv" target="_blank">Iconv</a>.
+            </li>
+            <li>
+                Either <a href="http://php.net/bc" target="blank">BC</a>, <a href="http://php.net/gmp" target="_blank">GMP</a> or <a href="http://phpseclib.sourceforge.net/" target="_blank">phpseclib</a> (see BigIntegerBug for an explanation) - as of CFPropertyList 1.0.1.
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="jumbotron theme-dark">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-24 text-center">
+          <h3>Related</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="jumbotron theme-default">
+    <div class="container">
+      <div class="row">
+        <br class="visible-xs-inline-block visible-sm-inline-block"/>
+
+          <div class="type-h3 padding-h0">
+            Relevant information and projects
+          </div>
+          <br />
+          <ul>
+            <li>
+                <a href="http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html" target="_blank">Mac OS X Manual Pages</a>
+            </li>
+            <li>
+                <a href="http://www.opensource.apple.com/source/CF/CF-476.15/CFBinaryPList.c" target="_blank">CFBinaryPList.c</a>.
+            </li>
+            <li>
+                <a href="https://rubygems.org/gems/CFPropertyList/" target="_blank">CFPropertyList in Ruby</a>.
+            </li>
+            <li>
+                <a href="https://github.com/bencochran/CFPropertyList" target="_blank">CFPropertyList in Python</a>.
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+</section>
