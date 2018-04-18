@@ -65,7 +65,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * @var string
    */
   protected $file = null;
-  
+
   /**
    * Detected format of PropertyList
    * @var integer
@@ -242,6 +242,9 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
   public function parse($str=NULL,$format=NULL) {
     $format = $format !== null ? $format : $this->format;
     $str = $str !== null ? $str : $this->content;
+    if ($str === null || strlen($str) === 0) {
+       throw IOException::readError('');
+    }
     $this->value = array();
 
     switch($format) {

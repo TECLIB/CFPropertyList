@@ -16,7 +16,7 @@ if(!defined('WRITE_XML_DATA_FILE')) {
 
 require_once(LIBDIR.'/CFPropertyList.php');
 
-class WriteXMLTest extends \PHPUnit_Framework_TestCase {
+class WriteXMLTest extends \PHPUnit\Framework\TestCase {
   public function testWriteFile() {
     $plist = new CFPropertyList();
     $dict = new CFDictionary();
@@ -45,6 +45,9 @@ class WriteXMLTest extends \PHPUnit_Framework_TestCase {
     unlink(WRITE_XML_DATA_FILE);
   }
 
+  /**
+   * @doesNotPerformAssertions
+   */
   public function testWriteString() {
     $plist = new CFPropertyList();
     $dict = new CFDictionary();
@@ -69,8 +72,7 @@ class WriteXMLTest extends \PHPUnit_Framework_TestCase {
     $plist->parse($content);
   }
 
-  public
-  function testWriteUid() {
+  public function testWriteUid() {
     $plist = new CFPropertyList();
     $dict = new CFDictionary();
     $dict->add('test', new CFUid(1));

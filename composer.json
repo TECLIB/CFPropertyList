@@ -26,5 +26,8 @@
         "psr-0": {
             "CFPropertyList":"classes\/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.0 || ^7.0"
     }
 }
