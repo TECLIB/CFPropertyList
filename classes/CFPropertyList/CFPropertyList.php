@@ -65,7 +65,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * @var string
    */
   protected $file = null;
-  
+
   /**
    * Detected format of PropertyList
    * @var integer
@@ -220,7 +220,15 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
         // else: xml format, break not neccessary
       case CFPropertyList::FORMAT_XML:
         $doc = new DOMDocument();
-        if(!$doc->load($file)) throw new DOMException();
+        $prevXmlErrors = libxml_use_internal_errors(true);
+        libxml_clear_errors();
+        if (!$doc->load($file)) {
+          $message = $this->getLibxmlErrors();
+            libxml_clear_errors();
+            libxml_use_internal_errors($prevXmlErrors);
+            throw new DOMException($message);
+        }
+        libxml_use_internal_errors($prevXmlErrors);
         $this->import($doc->documentElement, $this);
         break;
     }
@@ -264,10 +272,24 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
         // else: xml format, break not neccessary
       case CFPropertyList::FORMAT_XML:
         $doc = new DOMDocument();
-        if(!$doc->loadXML($str)) throw new DOMException();
+        $prevXmlErrors = libxml_use_internal_errors(true);
+        libxml_clear_errors();
+        if (!$doc->loadXML($str)) {
+            $message = $this->getLibxmlErrors();
+            libxml_clear_errors();
+            libxml_use_internal_errors($prevXmlErrors);
+            throw new DOMException($message);
+        }
+        libxml_use_internal_errors($prevXmlErrors);
         $this->import($doc->documentElement, $this);
         break;
     }
+  }
+
+  protected function getLibxmlErrors() {
+    return implode(', ', array_map(function(\LibXMLError $error) {
+      return trim("{$error->line}:{$error->column} [$error->code] $error->message");
+    }, libxml_get_errors()));
   }
 
   /**

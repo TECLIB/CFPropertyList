@@ -89,9 +89,7 @@ class ParseXMLTest extends \PHPUnit_Framework_TestCase {
       $plist->parse('lalala');
     }
     catch(\DOMException $e) {
-      $catched = true;
-    }
-    catch(\PHPUnit_Framework_Error $e) {
+      $this->assertNotEmpty($e->getMessage());
       $catched = true;
     }
 
@@ -107,7 +105,8 @@ class ParseXMLTest extends \PHPUnit_Framework_TestCase {
     catch(PListException $e) {
       return;
     }
-    catch(\PHPUnit_Framework_Error $e) {
+    catch(\DOMException $e) {
+      $this->assertNotEmpty($e->getMessage());
       return;
     }
 
