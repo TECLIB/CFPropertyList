@@ -340,12 +340,13 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
   /**
    * Convert CFPropertyList to XML and save to file.
    * @param string $file Path of PropertyList, defaults to {@link $file}
+   * @param bool $formatted Print plist formatted (i.e. with newlines and whitespace indention) if true; defaults to false
    * @return void
    * @throws IOException if file could not be read
    * @uses $file if $file was not specified
    */
-  public function saveXML($file) {
-    $this->save($file,CFPropertyList::FORMAT_XML);
+  public function saveXML($file, $formatted=false) {
+    $this->save($file,CFPropertyList::FORMAT_XML,$formatted);
   }
 
   /**
@@ -363,13 +364,14 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
    * Convert CFPropertyList to XML or binary and save to file.
    * @param string $file Path of PropertyList, defaults to {@link $file}
    * @param string $format Format of PropertyList, defaults to {@link $format}
+   * @param bool $formatted_xml Print XML plist formatted (i.e. with newlines and whitespace indention) if true; defaults to false
    * @return void
    * @throws IOException if file could not be read
    * @throws PListException if evaluated $format is neither {@link FORMAT_XML} nor {@link FORMAL_BINARY}
    * @uses $file if $file was not specified
    * @uses $format if $format was not specified
    */
-  public function save($file=null,$format=null) {
+  public function save($file=null,$format=null,$formatted_xml=false) {
     $file = $file ? $file : $this->file;
     $format = $format ? $format : $this->format;
     if($format == self::FORMAT_AUTO)$format = $this->detectedFormat;
@@ -383,7 +385,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator {
     }
     else if(!is_writable($file)) throw IOException::notWritable($file);
 
-    $content = $format == self::FORMAT_BINARY ? $this->toBinary() : $this->toXML();
+    $content = $format == self::FORMAT_BINARY ? $this->toBinary() : $this->toXML($formatted_xml);
 
     $fh = fopen($file, 'wb');
     fwrite($fh,$content);
