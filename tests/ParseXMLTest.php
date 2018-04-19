@@ -117,13 +117,18 @@ class ParseXMLTest extends \PHPUnit\Framework\TestCase {
     catch(\DOMException $e) {
       $catched = true;
     }
+    catch(\PHPUnit\Framework\Error\Warning $e) {
+       // For PHPUnit >= 6
+       $catched = true;
+       $this->assertEquals($e->getMessage(), "DOMDocument::loadXML(): Start tag expected, '<' not found in Entity, line: 1");
+    }
     catch(\PHPUnit_Framework_Error $e) {
+       // for PHPUnit < 6
       $catched = true;
+      $this->assertEquals($e->getMessage(), "DOMDocument::loadXML(): Start tag expected, '<' not found in Entity, line: 1");
     }
 
-    if($catched == false) {
-      $this->fail('No exception thrown for invalid string!');
-    }
+    $this->assertTrue($catched, 'No exception thrown for invalid string!');
 
     $catched = false;
     try {
@@ -131,13 +136,20 @@ class ParseXMLTest extends \PHPUnit\Framework\TestCase {
       $plist->parse('<plist>');
     }
     catch(PListException $e) {
-      return;
+      $catched = true;
+    }
+    catch(\PHPUnit\Framework\Error\Warning $e) {
+      // For PHPUnit >= 6
+      $catched = true;
+      $this->assertEquals($e->getMessage(), "DOMDocument::loadXML(): Premature end of data in tag plist line 1 in Entity, line: 1");
     }
     catch(\PHPUnit_Framework_Error $e) {
-      return;
+      // for PHPUnit < 6
+      $catched = true;
+      $this->assertEquals($e->getMessage(), "DOMDocument::loadXML(): Premature end of data in tag plist line 1 in Entity, line: 1");
     }
 
-    $this->fail('No exception thrown for invalid string!');
+    $this->assertTrue($catched, 'No exception thrown for invalid string!');
   }
 
   public function testUidPlist() {

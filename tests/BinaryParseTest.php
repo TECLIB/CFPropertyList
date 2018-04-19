@@ -119,9 +119,7 @@ class BinaryParseTest extends \PHPUnit\Framework\TestCase {
       $catched = true;
     }
 
-    if($catched == false) {
-      $this->fail('No exception thrown for invalid string!');
-    }
+    $this->assertTrue($catched, 'No exception thrown for invalid string!');
 
     $catched = false;
     try {
@@ -129,10 +127,10 @@ class BinaryParseTest extends \PHPUnit\Framework\TestCase {
       $plist->parseBinary('bplist00dfwefwefwef');
     }
     catch(PListException $e) {
-      return;
+      $catched = true;
     }
 
-    $this->fail('No exception thrown for invalid string!');
+    $this->assertTrue($catched, 'No exception thrown for invalid string!');
   }
 
   public function testUidPlist() {
