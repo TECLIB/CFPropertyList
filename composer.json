@@ -3,10 +3,10 @@
     "description": "Library for reading and writing Apple's CFPropertyList (plist) files in XML as well as binary format.",
     "keywords": ["plist"],
     "type": "library",
-    "homepage": "https://github.com/rodneyrehm/CFPropertyList",
+    "homepage": "https://github.com/TECLIB/CFPropertyList",
     "license": "MIT",
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.6"
     },
     "authors": [
         {
@@ -16,11 +16,15 @@
         {
             "name": "Rodney Rehm",
             "email": "mail+github@rodneyrehm.de"
-        }
-    ],
+        },
+        {
+         "name": "Thierry Bugier",
+         "email": "tbugier@teclib.com"
+     }
+ ],
     "support": {
-        "issues": "https://github.com/rodneyrehm/CFPropertyList/issues",
-        "source": "https://github.com/rodneyrehm/CFPropertyList"
+        "issues": "https://github.com/TECLIB/CFPropertyList/issues",
+        "source": "https://github.com/TECLIB/CFPropertyList"
     },
     "autoload": {
         "psr-4": {
