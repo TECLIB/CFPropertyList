@@ -49,8 +49,8 @@
 namespace CFPropertyList;
 
 // just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
 
 /**
  * Require CFPropertyList
@@ -71,7 +71,5 @@ $plist->parseBinary($content);
  */
 
 echo '<pre>';
-var_dump( $plist->toArray() );
+var_dump($plist->toArray());
 echo '</pre>';
-
-?>

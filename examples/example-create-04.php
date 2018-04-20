@@ -49,24 +49,25 @@
 namespace CFPropertyList;
 
 // just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
 
 /**
  * Require CFPropertyList
  */
 require_once(__DIR__.'/../vendor/autoload.php');
 
-class DemoDetector extends CFTypeDetector {
+class DemoDetector extends CFTypeDetector
+{
 
-  public function toCFType($value) {
-    if( $value instanceof PListException ) {
-      return new CFString( $value->getMessage() );
+    public function toCFType($value)
+    {
+        if ($value instanceof PListException) {
+            return new CFString($value->getMessage());
+        }
+
+        return parent::toCFType($value);
     }
-
-    return parent::toCFType($value);
-  }
-
 }
 
 /*
@@ -89,45 +90,40 @@ $structure = array(
  * Try default detection
  */
 try {
-  $plist = new CFPropertyList();
-  $td = new CFTypeDetector();
-  $guessedStructure = $td->toCFType( $structure );
-  $plist->add( $guessedStructure );
-  $plist->saveXML( __DIR__.'/example-create-04.xml.plist' );
-  $plist->saveBinary( __DIR__.'/example-create-04.binary.plist' );
-}
-catch( PListException $e ) {
-  echo 'Normal detection: ', $e->getMessage(), "\n";
+    $plist = new CFPropertyList();
+    $td = new CFTypeDetector();
+    $guessedStructure = $td->toCFType($structure);
+    $plist->add($guessedStructure);
+    $plist->saveXML(__DIR__.'/example-create-04.xml.plist');
+    $plist->saveBinary(__DIR__.'/example-create-04.binary.plist');
+} catch (PListException $e) {
+    echo 'Normal detection: ', $e->getMessage(), "\n";
 }
 
 /*
  * Try detection by omitting exceptions
  */
 try {
-  $plist = new CFPropertyList();
-  $td = new CFTypeDetector( array('suppressExceptions' => true) );
-  $guessedStructure = $td->toCFType( $structure );
-  $plist->add( $guessedStructure );
-  $plist->saveXML( __DIR__.'/example-create-04.xml.plist' );
-  $plist->saveBinary( __DIR__.'/example-create-04.binary.plist' );
-}
-catch( PListException $e ) {
-  echo 'Silent detection: ', $e->getMessage(), "\n";
+    $plist = new CFPropertyList();
+    $td = new CFTypeDetector(array('suppressExceptions' => true));
+    $guessedStructure = $td->toCFType($structure);
+    $plist->add($guessedStructure);
+    $plist->saveXML(__DIR__.'/example-create-04.xml.plist');
+    $plist->saveBinary(__DIR__.'/example-create-04.binary.plist');
+} catch (PListException $e) {
+    echo 'Silent detection: ', $e->getMessage(), "\n";
 }
 
 /*
  * Try detection with an extended version of CFTypeDetector
  */
 try {
-  $plist = new CFPropertyList();
-  $td = new DemoDetector();
-  $guessedStructure = $td->toCFType( $structure );
-  $plist->add( $guessedStructure );
-  $plist->saveXML( __DIR__.'/example-create-04.xml.plist' );
-  $plist->saveBinary( __DIR__.'/example-create-04.binary.plist' );
+    $plist = new CFPropertyList();
+    $td = new DemoDetector();
+    $guessedStructure = $td->toCFType($structure);
+    $plist->add($guessedStructure);
+    $plist->saveXML(__DIR__.'/example-create-04.xml.plist');
+    $plist->saveBinary(__DIR__.'/example-create-04.binary.plist');
+} catch (PListException $e) {
+    echo 'User defined detection: ', $e->getMessage(), "\n";
 }
-catch( PListException $e ) {
-  echo 'User defined detection: ', $e->getMessage(), "\n";
-}
-
-?>

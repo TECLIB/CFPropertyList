@@ -50,8 +50,8 @@
 namespace CFPropertyList;
 
 // just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
 
 /**
  * Require CFPropertyList
@@ -72,28 +72,26 @@ $plist = new CFPropertyList();
 $structure = array(
   'Year Of Birth' => 1965,
   // Note: dates cannot be guessed, it thus has to be specified explicitly
-  'Date Of Graduation' => new CFDate( gmmktime( 19, 23, 43, 06, 22, 2004 ) ),
+  'Date Of Graduation' => new CFDate(gmmktime(19, 23, 43, 06, 22, 2004)),
   'Pets Names' => array(),
   // Note: data cannot be guessed, it thus has to be specified explicitly
-  'Picture' => new CFData( 'PEKBpYGlmYFCPA==', true ),
+  'Picture' => new CFData('PEKBpYGlmYFCPA==', true),
   'City Of Birth' => 'Springfield',
   'Name' => 'John Doe',
   'Kids Names' => array( 'John', 'Kyra' ),
 );
 
 $td = new CFTypeDetector();
-$guessedStructure = $td->toCFType( $structure );
-$plist->add( $guessedStructure );
+$guessedStructure = $td->toCFType($structure);
+$plist->add($guessedStructure);
 
 
 /*
  * Save PList as XML
  */
-$plist->saveXML( __DIR__.'/example-create-03.xml.plist' );
+$plist->saveXML(__DIR__.'/example-create-03.xml.plist');
 
 /*
  * Save PList as Binary
  */
-$plist->saveBinary( __DIR__.'/example-create-03.binary.plist' );
-
-?>
+$plist->saveBinary(__DIR__.'/example-create-03.binary.plist');
