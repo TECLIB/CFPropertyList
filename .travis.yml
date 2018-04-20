@@ -1,6 +1,6 @@
-language: php 
+language: php
 
-php: 
+php:
   - 5.6
   - 7.0
   - 7.1
@@ -19,6 +19,16 @@ script:
   - vendor/bin/phpunit tests/ParseXMLTest.php
   - vendor/bin/phpunit tests/WriteBinaryTest.php
   - vendor/bin/phpunit tests/WriteXMLTest.php
+  - php examples/example-create-01.php
+  - php examples/example-create-02.php
+  - php examples/example-create-03.php
+  - php examples/example-create-04.php
+  - php examples/example-modify-01.php
+  - php examples/example-read-01.php
+  - php examples/example-read-02.php
+  - php examples/example-read-03.php
+  - php examples/example-read-04.php
+  - php examples/example-read-05.php
 
 
 cache:
