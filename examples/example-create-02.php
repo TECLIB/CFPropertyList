@@ -4,13 +4,6 @@
  *
  * This file is part of CFPropertyList.
  *
- * The PHP implementation of Apple's PropertyList can handle XML PropertyLists
- * as well as binary PropertyLists. It offers functionality to easily convert
- * data between worlds, e.g. recalculating timestamps from unix epoch to apple
- * epoch and vice versa. A feature to automagically create (guess) the plist
- * structure from a normal PHP data structure will help you dump your data to
- * plist in no time.
- *
  * Copyright (c) 2018 Teclib'
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,7 +27,7 @@
  * ------------------------------------------------------------------------------
  * @author    Christian Kruse <cjk@wwwtech.de>
  * @copyright Copyright © 2018 Teclib
- * @package   plist
+ * @package   CFPropertyList
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
  * ------------------------------------------------------------------------------
@@ -47,11 +40,13 @@
  * @subpackage plist.examples
  */
 namespace CFPropertyList;
-use \DateTime, \DateTimeZone;
+
+use \DateTime;
+use \DateTimeZone;
 
 // just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
 
 /**
  * Require CFPropertyList
@@ -73,8 +68,8 @@ $structure = array(
   'Year Of Birth' => 1965,
   // Note: dates cannot be guessed, so this will become a CFNumber and be treated as an integer
   // See example-04.php for a possible workaround
-  'Date Of Graduation' => gmmktime( 19, 23, 43, 06, 22, 2004 ),
-  'Date Of Birth' => new DateTime( '1984-09-07 08:15:23', new DateTimeZone( 'Europe/Berlin' ) ),
+  'Date Of Graduation' => gmmktime(19, 23, 43, 06, 22, 2004),
+  'Date Of Birth' => new DateTime('1984-09-07 08:15:23', new DateTimeZone('Europe/Berlin')),
   'Pets Names' => array(),
   // Note: data cannot be guessed, so this will become a CFString
   // See example-03.php for a possible workaround
@@ -85,18 +80,16 @@ $structure = array(
 );
 
 $td = new CFTypeDetector();
-$guessedStructure = $td->toCFType( $structure );
-$plist->add( $guessedStructure );
+$guessedStructure = $td->toCFType($structure);
+$plist->add($guessedStructure);
 
 
 /*
  * Save PList as XML
  */
-$plist->saveXML( __DIR__.'/example-create-02.xml.plist' );
+$plist->saveXML(__DIR__.'/example-create-02.xml.plist');
 
 /*
  * Save PList as Binary
  */
-$plist->saveBinary( __DIR__.'/example-create-02.binary.plist' );
-
-?>
+$plist->saveBinary(__DIR__.'/example-create-02.binary.plist');

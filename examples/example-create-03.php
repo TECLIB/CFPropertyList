@@ -4,13 +4,6 @@
  *
  * This file is part of CFPropertyList.
  *
- * The PHP implementation of Apple's PropertyList can handle XML PropertyLists
- * as well as binary PropertyLists. It offers functionality to easily convert
- * data between worlds, e.g. recalculating timestamps from unix epoch to apple
- * epoch and vice versa. A feature to automagically create (guess) the plist
- * structure from a normal PHP data structure will help you dump your data to
- * plist in no time.
- *
  * Copyright (c) 2018 Teclib'
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,7 +27,7 @@
  * ------------------------------------------------------------------------------
  * @author    Christian Kruse <cjk@wwwtech.de>
  * @copyright Copyright © 2018 Teclib
- * @package   plist
+ * @package   CFPropertyList
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
  * ------------------------------------------------------------------------------
@@ -50,8 +43,8 @@
 namespace CFPropertyList;
 
 // just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
 
 /**
  * Require CFPropertyList
@@ -72,28 +65,26 @@ $plist = new CFPropertyList();
 $structure = array(
   'Year Of Birth' => 1965,
   // Note: dates cannot be guessed, it thus has to be specified explicitly
-  'Date Of Graduation' => new CFDate( gmmktime( 19, 23, 43, 06, 22, 2004 ) ),
+  'Date Of Graduation' => new CFDate(gmmktime(19, 23, 43, 06, 22, 2004)),
   'Pets Names' => array(),
   // Note: data cannot be guessed, it thus has to be specified explicitly
-  'Picture' => new CFData( 'PEKBpYGlmYFCPA==', true ),
+  'Picture' => new CFData('PEKBpYGlmYFCPA==', true),
   'City Of Birth' => 'Springfield',
   'Name' => 'John Doe',
   'Kids Names' => array( 'John', 'Kyra' ),
 );
 
 $td = new CFTypeDetector();
-$guessedStructure = $td->toCFType( $structure );
-$plist->add( $guessedStructure );
+$guessedStructure = $td->toCFType($structure);
+$plist->add($guessedStructure);
 
 
 /*
  * Save PList as XML
  */
-$plist->saveXML( __DIR__.'/example-create-03.xml.plist' );
+$plist->saveXML(__DIR__.'/example-create-03.xml.plist');
 
 /*
  * Save PList as Binary
  */
-$plist->saveBinary( __DIR__.'/example-create-03.binary.plist' );
-
-?>
+$plist->saveBinary(__DIR__.'/example-create-03.binary.plist');

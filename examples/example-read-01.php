@@ -4,13 +4,6 @@
  *
  * This file is part of CFPropertyList.
  *
- * The PHP implementation of Apple's PropertyList can handle XML PropertyLists
- * as well as binary PropertyLists. It offers functionality to easily convert
- * data between worlds, e.g. recalculating timestamps from unix epoch to apple
- * epoch and vice versa. A feature to automagically create (guess) the plist
- * structure from a normal PHP data structure will help you dump your data to
- * plist in no time.
- *
  * Copyright (c) 2018 Teclib'
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,7 +27,7 @@
  * ------------------------------------------------------------------------------
  * @author    Christian Kruse <cjk@wwwtech.de>
  * @copyright Copyright © 2018 Teclib
- * @package   plist
+ * @package   CFPropertyList
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
  * ------------------------------------------------------------------------------
@@ -49,8 +42,8 @@
 namespace CFPropertyList;
 
 // just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
 
 /**
  * Require CFPropertyList
@@ -62,14 +55,12 @@ require_once(__DIR__.'/../vendor/autoload.php');
  * create a new CFPropertyList instance which loads the sample.plist on construct.
  * since we know it's an XML file, we can skip format-determination
  */
-$plist = new CFPropertyList( __DIR__.'/sample.xml.plist', CFPropertyList::FORMAT_XML );
+$plist = new CFPropertyList(__DIR__.'/sample.xml.plist', CFPropertyList::FORMAT_XML);
 
 /*
  * retrieve the array structure of sample.plist and dump to stdout
  */
 
 echo '<pre>';
-var_dump( $plist->toArray() );
+var_dump($plist->toArray());
 echo '</pre>';
-
-?>

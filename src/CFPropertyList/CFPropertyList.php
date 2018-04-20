@@ -4,13 +4,6 @@
  *
  * This file is part of CFPropertyList.
  *
- * The PHP implementation of Apple's PropertyList can handle XML PropertyLists
- * as well as binary PropertyLists. It offers functionality to easily convert
- * data between worlds, e.g. recalculating timestamps from unix epoch to apple
- * epoch and vice versa. A feature to automagically create (guess) the plist
- * structure from a normal PHP data structure will help you dump your data to
- * plist in no time.
- *
  * Copyright (c) 2018 Teclib'
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,7 +28,7 @@
  * @author    Rodney Rehm <rodney.rehm@medialize.de>
  * @author    Christian Kruse <cjk@wwwtech.de>
  * @copyright Copyright © 2018 Teclib
- * @package   plist
+ * @package   CFPropertyList
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
  * @link      http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html Property Lists
@@ -237,7 +230,9 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator
             case CFPropertyList::FORMAT_BINARY:
                 $this->readBinary($file);
                 break;
-            case CFPropertyList::FORMAT_AUTO: // what we now do is ugly, but neccessary to recognize the file format
+
+            case CFPropertyList::FORMAT_AUTO:
+                // what we now do is ugly, but neccessary to recognize the file format
                 $fd = fopen($file, "rb");
                 if (($magic_number = fread($fd, 8)) === false) {
                     throw IOException::notReadable($file);
@@ -256,8 +251,10 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator
                     break;
                 }
                 $this->detectedFormat = CFPropertyList::FORMAT_XML;
-              // else: xml format, break not neccessary
+                // Fall back to CFPropertyList::FORMAT_XML
+
             case CFPropertyList::FORMAT_XML:
+                // else: xml format, break not neccessary
                 $doc = new DOMDocument();
                 $prevXmlErrors = libxml_use_internal_errors(true);
                 libxml_clear_errors();
@@ -299,7 +296,9 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator
             case CFPropertyList::FORMAT_BINARY:
                 $this->parseBinary($str);
                 break;
-            case CFPropertyList::FORMAT_AUTO: // what we now do is ugly, but neccessary to recognize the file format
+
+            case CFPropertyList::FORMAT_AUTO:
+                // what we now do is ugly, but neccessary to recognize the file format
                 if (($magic_number = substr($str, 0, 8)) === false) {
                     throw IOException::notReadable("<string>");
                 }
@@ -316,8 +315,10 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator
                     break;
                 }
                 $this->detectedFormat = CFPropertyList::FORMAT_XML;
-              // else: xml format, break not neccessary
+                // no break: fallback to FORMAT_XML
+
             case CFPropertyList::FORMAT_XML:
+                // else: xml format, break not neccessary
                 $doc = new DOMDocument();
                 $prevXmlErrors = libxml_use_internal_errors(true);
                 libxml_clear_errors();
@@ -348,13 +349,13 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator
    */
     protected function import(DOMNode $node, $parent)
     {
-      // abort if there are no children
+        // abort if there are no children
         if (!$node->childNodes->length) {
             return;
         }
 
         foreach ($node->childNodes as $n) {
-          // skip if we can't handle the element
+            // skip if we can't handle the element
             if (!isset(self::$types[$n->nodeName])) {
                 continue;
             }
@@ -362,13 +363,13 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator
             $class = __NAMESPACE__ . '\\'.self::$types[$n->nodeName];
             $key = null;
 
-          // find previous <key> if possible
+            // find previous <key> if possible
             $ps = $n->previousSibling;
             while ($ps && $ps->nodeName == '#text' && $ps->previousSibling) {
                 $ps = $ps->previousSibling;
             }
 
-          // read <key> if possible
+            // read <key> if possible
             if ($ps && $ps->nodeName == 'key') {
                 $key = $ps->firstChild->nodeValue;
             }
@@ -409,11 +410,11 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator
                     break;
             }
 
-        // Dictionaries need a key
+            // Dictionaries need a key
             if ($parent instanceof CFDictionary) {
                 $parent->add($key, $value);
-            } // others don't
-            else {
+            } else {
+                // others don't
                 $parent->add($value);
             }
         }

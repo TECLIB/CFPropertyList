@@ -4,13 +4,6 @@
  *
  * This file is part of CFPropertyList.
  *
- * The PHP implementation of Apple's PropertyList can handle XML PropertyLists
- * as well as binary PropertyLists. It offers functionality to easily convert
- * data between worlds, e.g. recalculating timestamps from unix epoch to apple
- * epoch and vice versa. A feature to automagically create (guess) the plist
- * structure from a normal PHP data structure will help you dump your data to
- * plist in no time.
- *
  * Copyright (c) 2018 Teclib'
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,7 +27,7 @@
  * ------------------------------------------------------------------------------
  * @author    Christian Kruse <cjk@wwwtech.de>
  * @copyright Copyright © 2018 Teclib
- * @package   plist
+ * @package   CFPropertyList
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
  * ------------------------------------------------------------------------------
@@ -48,8 +41,8 @@
 namespace CFPropertyList;
 
 // just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
 
 /**
  * Require CFPropertyList
@@ -66,42 +59,40 @@ $plist = new CFPropertyList();
  * Manuall Create the sample.xml.plist
  */
 // the Root element of the PList is a Dictionary
-$plist->add( $dict = new CFDictionary() );
+$plist->add($dict = new CFDictionary());
 
 // <key>Year Of Birth</key><integer>1965</integer>
-$dict->add( 'Year Of Birth', new CFNumber( 1965 ) );
+$dict->add('Year Of Birth', new CFNumber(1965));
 
 // <key>Date Of Graduation</key><date>2004-06-22T19:23:43Z</date>
-$dict->add( 'Date Of Graduation', new CFDate( gmmktime( 19, 23, 43, 06, 22, 2004 ) ) );
+$dict->add('Date Of Graduation', new CFDate(gmmktime(19, 23, 43, 06, 22, 2004)));
 
 // <key>Pets Names</key><array/>
-$dict->add( 'Pets Names', new CFArray() );
+$dict->add('Pets Names', new CFArray());
 
 // <key>Picture</key><data>PEKBpYGlmYFCPA==</data>
 // to keep it simple we insert an already base64-encoded string
-$dict->add( 'Picture', new CFData( 'PEKBpYGlmYFCPA==', true ) );
+$dict->add('Picture', new CFData('PEKBpYGlmYFCPA==', true));
 
 // <key>City Of Birth</key><string>Springfield</string>
-$dict->add( 'City Of Birth', new CFString( 'Springfield' ) );
+$dict->add('City Of Birth', new CFString('Springfield'));
 
 // <key>Name</key><string>John Doe</string>
-$dict->add( 'Name', new CFString( 'John Doe' ) );
+$dict->add('Name', new CFString('John Doe'));
 
 // <key>Kids Names</key><array><string>John</string><string>Kyra</string></array>
-$dict->add( 'Kids Names', $array = new CFArray() );
-$array->add( new CFString( 'John' ) );
-$array->add( new CFString( 'Kyra' ) );
+$dict->add('Kids Names', $array = new CFArray());
+$array->add(new CFString('John'));
+$array->add(new CFString('Kyra'));
 
 
 /*
  * Save PList as XML
  */
-$plist->saveXML( __DIR__.'/example-create-01.xml.plist' );
+$plist->saveXML(__DIR__.'/example-create-01.xml.plist');
 
 
 /*
  * Save PList as Binary
  */
-$plist->saveBinary( __DIR__.'/example-create-01.binary.plist' );
-
-?>
+$plist->saveBinary(__DIR__.'/example-create-01.binary.plist');
