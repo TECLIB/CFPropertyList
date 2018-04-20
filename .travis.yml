@@ -14,11 +14,8 @@ before_script:
   - composer install --no-interaction
 
 script:
-  - vendor/bin/phpunit tests/BinaryParseTest.php
-  - vendor/bin/phpunit tests/BinaryParseTest.php
-  - vendor/bin/phpunit tests/ParseXMLTest.php
-  - vendor/bin/phpunit tests/WriteBinaryTest.php
-  - vendor/bin/phpunit tests/WriteXMLTest.php
+  - vendor/bin/phpunit tests/
+  - vendor/bin/phpcs --standard=PSR2 -n src/ tests/
   - php examples/example-create-01.php
   - php examples/example-create-02.php
   - php examples/example-create-03.php
@@ -30,7 +27,6 @@ script:
   - php examples/example-read-04.php
   - php examples/example-read-05.php
   - php examples/example-read-06.php
-
 
 cache:
   directories:

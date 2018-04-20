@@ -44,6 +44,7 @@
 
 namespace CFPropertyList;
 
-class PListException extends \Exception {}
+class PListException extends \Exception
+{
 
-
+}

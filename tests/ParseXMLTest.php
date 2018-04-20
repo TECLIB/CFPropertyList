@@ -42,104 +42,109 @@
 
 namespace CFPropertyList;
 
-class ParseXMLTest extends \PHPUnit\Framework\TestCase {
-  public function testParse() {
-    $plist = new CFPropertyList(TEST_XML_DATA_FILE);
+class ParseXMLTest extends \PHPUnit\Framework\TestCase
+{
+    public function testParse()
+    {
+        $plist = new CFPropertyList(TEST_XML_DATA_FILE);
 
-    $vals = $plist->toArray();
-    $this->assertEquals(count($vals),4);
+        $vals = $plist->toArray();
+        $this->assertEquals(count($vals), 4);
 
-    $this->assertEquals($vals['names']['given-name'],'John');
-    $this->assertEquals($vals['names']['surname'],'Dow');
+        $this->assertEquals($vals['names']['given-name'], 'John');
+        $this->assertEquals($vals['names']['surname'], 'Dow');
 
-    $this->assertEquals($vals['pets'][0],'Jonny');
-    $this->assertEquals($vals['pets'][1],'Bello');
+        $this->assertEquals($vals['pets'][0], 'Jonny');
+        $this->assertEquals($vals['pets'][1], 'Bello');
 
-    $this->assertEquals($vals['age'],28);
-    $this->assertEquals($vals['birth-date'],412035803);
-  }
-
-  public function testParseString() {
-    $content = file_get_contents(TEST_XML_DATA_FILE);
-
-    $plist = new CFPropertyList();
-    $plist->parse($content);
-
-    $vals = $plist->toArray();
-    $this->assertEquals(count($vals),4);
-
-    $this->assertEquals($vals['names']['given-name'],'John');
-    $this->assertEquals($vals['names']['surname'],'Dow');
-
-    $this->assertEquals($vals['pets'][0],'Jonny');
-    $this->assertEquals($vals['pets'][1],'Bello');
-
-    $this->assertEquals($vals['age'],28);
-    $this->assertEquals($vals['birth-date'],412035803);
-  }
-
-  public function testParseStream() {
-    $plist = new CFPropertyList();
-    if(($fd = fopen(TEST_XML_DATA_FILE,"r")) == NULL) {
-      throw new IOException("Error opening test data file for reading!");
+        $this->assertEquals($vals['age'], 28);
+        $this->assertEquals($vals['birth-date'], 412035803);
     }
 
-    $plist->loadXMLStream($fd);
+    public function testParseString()
+    {
+        $content = file_get_contents(TEST_XML_DATA_FILE);
 
-    $vals = $plist->toArray();
-    $this->assertEquals(count($vals),4);
+        $plist = new CFPropertyList();
+        $plist->parse($content);
 
-    $this->assertEquals($vals['names']['given-name'],'John');
-    $this->assertEquals($vals['names']['surname'],'Dow');
+        $vals = $plist->toArray();
+        $this->assertEquals(count($vals), 4);
 
-    $this->assertEquals($vals['pets'][0],'Jonny');
-    $this->assertEquals($vals['pets'][1],'Bello');
+        $this->assertEquals($vals['names']['given-name'], 'John');
+        $this->assertEquals($vals['names']['surname'], 'Dow');
 
-    $this->assertEquals($vals['age'],28);
-    $this->assertEquals($vals['birth-date'],412035803);
-  }
+        $this->assertEquals($vals['pets'][0], 'Jonny');
+        $this->assertEquals($vals['pets'][1], 'Bello');
+
+        $this->assertEquals($vals['age'], 28);
+        $this->assertEquals($vals['birth-date'], 412035803);
+    }
+
+    public function testParseStream()
+    {
+        $plist = new CFPropertyList();
+        if (($fd = fopen(TEST_XML_DATA_FILE, "r")) == null) {
+            throw new IOException("Error opening test data file for reading!");
+        }
+
+        $plist->loadXMLStream($fd);
+
+        $vals = $plist->toArray();
+        $this->assertEquals(count($vals), 4);
+
+        $this->assertEquals($vals['names']['given-name'], 'John');
+        $this->assertEquals($vals['names']['surname'], 'Dow');
+
+        $this->assertEquals($vals['pets'][0], 'Jonny');
+        $this->assertEquals($vals['pets'][1], 'Bello');
+
+        $this->assertEquals($vals['age'], 28);
+        $this->assertEquals($vals['birth-date'], 412035803);
+    }
 
   /**
    * @expectedException CFPropertyList\IOException
    */
-  public function testEmptyString() {
-    $plist = new CFPropertyList();
-    $plist->parse('');
-  }
-
-  public function testInvalidString() {
-    $catched = false;
-    try {
-      $plist = new CFPropertyList();
-      $plist->parse('lalala');
-    }
-    catch(\DOMException $e) {
-      $catched = true;
-      $this->assertNotEmpty($e->getMessage());
+    public function testEmptyString()
+    {
+        $plist = new CFPropertyList();
+        $plist->parse('');
     }
 
-    $this->assertTrue($catched, 'No exception thrown for invalid string!');
+    public function testInvalidString()
+    {
+        $catched = false;
+        try {
+            $plist = new CFPropertyList();
+            $plist->parse('lalala');
+        } catch (\DOMException $e) {
+            $catched = true;
+            $this->assertNotEmpty($e->getMessage());
+        }
 
-    $catched = false;
-    try {
-      $plist = new CFPropertyList();
-      $plist->parse('<plist>');
+        $this->assertTrue($catched, 'No exception thrown for invalid string!');
+
+        $catched = false;
+        try {
+            $plist = new CFPropertyList();
+            $plist->parse('<plist>');
+        } catch (\DOMException $e) {
+            $catched = true;
+            $this->assertNotEmpty($e->getMessage());
+        }
+
+        $this->assertTrue($catched, 'No exception thrown for invalid string!');
     }
-    catch(\DOMException $e) {
-      $catched = true;
-      $this->assertNotEmpty($e->getMessage());
+
+    public function testUidPlist()
+    {
+        $plist = new CFPropertyList(TEST_UID_XML_PLIST);
+        $val = $plist->toArray();
+        $this->assertEquals(array('test' => 1), $val);
+        $v = $plist->getValue()->getValue();
+        $this->assertTrue($v['test'] instanceof CFUid);
     }
-
-    $this->assertTrue($catched, 'No exception thrown for invalid string!');
-  }
-
-  public function testUidPlist() {
-    $plist = new CFPropertyList(TEST_UID_XML_PLIST);
-    $val = $plist->toArray();
-    $this->assertEquals(array('test' => 1), $val);
-    $v = $plist->getValue()->getValue();
-    $this->assertTrue($v['test'] instanceof CFUid);
-  }
 }
 
 # eof
