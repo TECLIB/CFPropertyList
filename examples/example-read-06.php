@@ -27,7 +27,7 @@
  * ------------------------------------------------------------------------------
  * @author    Virtual Jasper
  * @copyright Copyright © 2018 Teclib
- * @package   plist
+ * @package   CFPropertyList
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
  * ------------------------------------------------------------------------------
