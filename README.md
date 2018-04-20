@@ -57,7 +57,7 @@ You can contact us through any of our channels, check our [Contact section](http
 ## Contribute
 
 Want to file a bug, contribute some code, or improve documentation? Excellent! Read up on our
-guidelines for [contributing](./CONTRIBUTING.md) and then check out one of our issues in the [Issues Dashboard](./issues).
+guidelines for [contributing](./CONTRIBUTING.md) and then check out one of our issues in the [Issues Dashboard](https://github.com/TECLIB/CFPropertyList/issues).
 
 ## Copying
 
