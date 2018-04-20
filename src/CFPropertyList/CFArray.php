@@ -43,34 +43,40 @@
  */
 
 namespace CFPropertyList;
-use \DOMDocument, \Iterator, \ArrayAccess;
+
+use \DOMDocument;
+use \Iterator;
+use \ArrayAccess;
 
 /**
  * Array Type of CFPropertyList
  */
-class CFArray extends CFType implements Iterator, ArrayAccess {
+class CFArray extends CFType implements Iterator, ArrayAccess
+{
   /**
    * Position of iterator {@link http://php.net/manual/en/class.iterator.php}
    * @var integer
    */
-  protected $iteratorPosition = 0;
+    protected $iteratorPosition = 0;
 
 
   /**
    * Create new CFType.
    * @param array $value Value of CFType
    */
-  public function __construct($value=array()) {
-    $this->value = $value;
-  }
+    public function __construct($value = array())
+    {
+        $this->value = $value;
+    }
 
   /**
    * Set the CFType's value
    * <b>Note:</b> this dummy does nothing
    * @return void
    */
-  public function setValue($value) {
-  }
+    public function setValue($value)
+    {
+    }
 
   /**
    * Add CFType to collection.
@@ -78,13 +84,15 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @return void
    * @uses $value for adding $value
    */
-  public function add(CFType $value=null) {
-    // anything but CFType is null, null is an empty string - sad but true
-    if( !$value )
-      $value = new CFString();
+    public function add(CFType $value = null)
+    {
+      // anything but CFType is null, null is an empty string - sad but true
+        if (!$value) {
+            $value = new CFString();
+        }
 
-    $this->value[] = $value;
-  }
+        $this->value[] = $value;
+    }
 
   /**
    * Get CFType from collection.
@@ -92,10 +100,13 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @return CFType CFType found at $key, null else
    * @uses $value for retrieving CFType of $key
    */
-  public function get($key) {
-    if(isset($this->value[$key])) return $this->value[$key];
-    return null;
-  }
+    public function get($key)
+    {
+        if (isset($this->value[$key])) {
+            return $this->value[$key];
+        }
+        return null;
+    }
 
   /**
    * Remove CFType from collection.
@@ -103,9 +114,12 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @return CFType removed CFType, null else
    * @uses $value for removing CFType of $key
    */
-  public function del($key) {
-    if(isset($this->value[$key])) unset($this->value[$key]);
-  }
+    public function del($key)
+    {
+        if (isset($this->value[$key])) {
+            unset($this->value[$key]);
+        }
+    }
 
 
   /************************************************************************************************
@@ -118,32 +132,39 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @param string $nodeName For compatibility reasons; just ignore it
    * @return DOMNode &lt;array&gt;-Element
    */
-  public function toXML(DOMDocument $doc,$nodeName="") {
-    $node = $doc->createElement('array');
+    public function toXML(DOMDocument $doc, $nodeName = "")
+    {
+        $node = $doc->createElement('array');
 
-    foreach($this->value as $value) $node->appendChild($value->toXML($doc));
-    return $node;
-  }
+        foreach ($this->value as $value) {
+            $node->appendChild($value->toXML($doc));
+        }
+        return $node;
+    }
 
   /**
    * convert value to binary representation
    * @param CFBinaryPropertyList The binary property list object
    * @return The offset in the object table
    */
-  public function toBinary(CFBinaryPropertyList &$bplist) {
-    return $bplist->arrayToBinary($this);
-  }
+    public function toBinary(CFBinaryPropertyList &$bplist)
+    {
+        return $bplist->arrayToBinary($this);
+    }
 
   /**
    * Get CFType's value.
    * @return array primitive value
    * @uses $value for retrieving primitive of CFType
    */
-  public function toArray() {
-    $a = array();
-    foreach($this->value as $value) $a[] = $value->toArray();
-    return $a;
-  }
+    public function toArray()
+    {
+        $a = array();
+        foreach ($this->value as $value) {
+            $a[] = $value->toArray();
+        }
+        return $a;
+    }
 
 
   /************************************************************************************************
@@ -156,9 +177,10 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @return void
    * @uses $iteratorPosition set to 0
    */
-  public function rewind() {
-    $this->iteratorPosition = 0;
-  }
+    public function rewind()
+    {
+        $this->iteratorPosition = 0;
+    }
 
   /**
    * Get Iterator's current {@link CFType} identified by {@link $iteratorPosition}
@@ -166,9 +188,10 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @return CFType current Item
    * @uses $iteratorPosition identify current key
    */
-  public function current() {
-    return $this->value[$this->iteratorPosition];
-  }
+    public function current()
+    {
+        return $this->value[$this->iteratorPosition];
+    }
 
   /**
    * Get Iterator's current key identified by {@link $iteratorPosition}
@@ -176,9 +199,10 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @return string key of the current Item
    * @uses $iteratorPosition identify current key
    */
-  public function key() {
-    return $this->iteratorPosition;
-  }
+    public function key()
+    {
+        return $this->iteratorPosition;
+    }
 
   /**
    * Increment {@link $iteratorPosition} to address next {@see CFType}
@@ -186,9 +210,10 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @return void
    * @uses $iteratorPosition increment by 1
    */
-  public function next() {
-    $this->iteratorPosition++;
-  }
+    public function next()
+    {
+        $this->iteratorPosition++;
+    }
 
   /**
    * Test if {@link $iteratorPosition} addresses a valid element of {@link $value}
@@ -197,9 +222,10 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @uses $iteratorPosition test if within {@link $iteratorKeys}
    * @uses $iteratorPosition test if within {@link $value}
    */
-  public function valid() {
-    return isset($this->value[$this->iteratorPosition]);
-  }
+    public function valid()
+    {
+        return isset($this->value[$this->iteratorPosition]);
+    }
 
   /************************************************************************************************
    *    ArrayAccess   I N T E R F A C E
@@ -213,9 +239,10 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @uses $value to check if $key exists
    * @author Sean Coates <sean@php.net>
    */
-  public function offsetExists($key) {
-    return isset($this->value[$key]);
-  }
+    public function offsetExists($key)
+    {
+        return isset($this->value[$key]);
+    }
 
   /**
    * Fetch a specific key from the CFArray
@@ -225,9 +252,10 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @uses get() to get the key's value
    * @author Sean Coates <sean@php.net>
    */
-  public function offsetGet($key) {
-    return $this->get($key);
-  }
+    public function offsetGet($key)
+    {
+        return $this->get($key);
+    }
 
   /**
    * Set a value in the array
@@ -238,9 +266,10 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @uses setValue() to set the key's new value
    * @author Sean Coates <sean@php.net>
    */
-  public function offsetSet($key, $value) {
-    return $this->setValue($value);
-  }
+    public function offsetSet($key, $value)
+    {
+        return $this->setValue($value);
+    }
 
   /**
    * Unsets a value in the array
@@ -250,7 +279,7 @@ class CFArray extends CFType implements Iterator, ArrayAccess {
    * @link http://php.net/manual/en/arrayaccess.offsetunset.php
    * @author Sean Coates <sean@php.net>
    */
-  public function offsetUnset($key) {
-
-  }
+    public function offsetUnset($key)
+    {
+    }
 }

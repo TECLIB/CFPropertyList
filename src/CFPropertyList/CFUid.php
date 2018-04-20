@@ -43,22 +43,26 @@
  */
 
 namespace CFPropertyList;
-use \DOMDocument, \Iterator, \ArrayAccess;
+
+use \DOMDocument;
+use \Iterator;
+use \ArrayAccess;
 
 /**
  * @example   example-create-02.php Using CFTypeDetector
  * @example   example-create-03.php Using CFTypeDetector with CFDate and CFData
  * @example   example-create-04.php Using and extended CFTypeDetector
  */
-class CFUid extends CFType {
-  public
-  function toXML(DOMDocument $doc,$nodeName="") {
-    $obj = new CFDictionary(array('CF$UID' => new CFNumber($this->value)));
-    return $obj->toXml($doc);
-  }
+class CFUid extends CFType
+{
+    public function toXML(DOMDocument $doc, $nodeName = "")
+    {
+        $obj = new CFDictionary(array('CF$UID' => new CFNumber($this->value)));
+        return $obj->toXml($doc);
+    }
 
-  public
-  function toBinary(CFBinaryPropertyList &$bplist) {
-    return $bplist->uidToBinary($this->value);
-  }
+    public function toBinary(CFBinaryPropertyList &$bplist)
+    {
+        return $bplist->uidToBinary($this->value);
+    }
 }
