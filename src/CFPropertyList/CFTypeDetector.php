@@ -44,8 +44,9 @@
 
 namespace CFPropertyList;
 
-use \DateTime;
-use \Iterator;
+use DateTime;
+use Iterator;
+use stdClass;
 
  /**
   * CFTypeDetector
@@ -153,14 +154,16 @@ class CFTypeDetector
             break;
 
             case is_object($value):
-              // DateTime should be CFDate
-                if (class_exists('DateTime') && $value instanceof DateTime) {
+                // DateTime should be CFDate
+                if (class_exists(DateTime::class) && $value instanceof DateTime) {
                     return new CFDate($value->getTimestamp());
                 }
 
-              // convert possible objects to arrays, arrays will be arrays
+                // convert possible objects to arrays, arrays will be arrays
                 if ($this->objectToArrayMethod && is_callable(array($value, $this->objectToArrayMethod))) {
                     $value = call_user_func(array( $value, $this->objectToArrayMethod ));
+                } else if ($value instanceof stdClass) {
+                    $value = (array) $value;
                 }
 
                 if (!is_array($value)) {
@@ -174,7 +177,7 @@ class CFTypeDetector
 
             case $value instanceof Iterator:
             case is_array($value):
-              // test if $value is simple or associative array
+                // test if $value is simple or associative array
                 if (!$this->autoDictionary) {
                     if (!$this->isAssociativeArray($value)) {
                         $t = new CFArray();
