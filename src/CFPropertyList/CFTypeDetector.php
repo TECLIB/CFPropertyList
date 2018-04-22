@@ -155,7 +155,7 @@ class CFTypeDetector
 
             case is_object($value):
                 // DateTime should be CFDate
-                if (class_exists(DateTime::class) && $value instanceof DateTime) {
+                if ($value instanceof DateTime) {
                     return new CFDate($value->getTimestamp());
                 }
 
