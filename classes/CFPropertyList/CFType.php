@@ -309,34 +309,7 @@ class CFData extends CFType {
    * @param boolean $already_coded if true $value will not be base64-encoded, defaults to false
    */
   public function __construct($value=null,$already_coded=false) {
-    if($already_coded) $this->value = $value;
-    else $this->setValue($value);
-  }
-
-  /**
-   * Set the CFType's value and base64-encode it.
-   * <b>Note:</b> looks like base64_encode has troubles with UTF-8 encoded strings
-   * @return void
-   */
-  public function setValue($value) {
-    //if(function_exists('mb_check_encoding') && mb_check_encoding($value, 'UTF-8')) $value = utf8_decode($value);
-    $this->value = base64_encode($value);
-  }
-
-  /**
-   * Get base64 encoded data
-   * @return string The base64 encoded data value
-   */
-  public function getCodedValue() {
-    return $this->value;
-  }
-
-  /**
-   * Get the base64-decoded CFType's value.
-   * @return mixed CFType's value
-   */
-  public function getValue() {
-    return base64_decode($this->value);
+	$this->setValue($already_coded ? base64_decode($value) : $value);
   }
 
   /**
@@ -346,7 +319,10 @@ class CFData extends CFType {
    * @return DOMNode &lt;data&gt;-Element
    */
   public function toXML(DOMDocument $doc,$nodeName="") {
-    return parent::toXML($doc, 'data');
+    $text = $doc->createTextNode(base64_encode($this->getValue()));
+    $node = $doc->createElement('data');
+    $node->appendChild($text);
+    return $node;	
   }
 
   /**
