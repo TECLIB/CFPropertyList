@@ -142,7 +142,6 @@ class CFTypeDetector
    * <br /><b>Note:</b> If $value is an instance of CFType it is simply returned.
    * <br /><b>Note:</b> If $value is neither a CFType, array, numeric, boolean nor string, it is omitted.
    * @param mixed $value Value to convert to CFType
-   * @param boolean $autoDictionary if true {@link CFArray}-detection is bypassed and arrays will be returned as {@link CFDictionary}.
    * @return CFType CFType based on guessed type
    * @uses isAssociativeArray() to check if an array only has numeric indexes
    */
