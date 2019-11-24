@@ -412,7 +412,8 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator
         // Dictionaries need a key
             if ($parent instanceof CFDictionary) {
                 $parent->add($key, $value);
-            } // others don't
+            }
+            // others don't
             else {
                 $parent->add($value);
             }
