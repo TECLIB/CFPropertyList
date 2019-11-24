@@ -9,8 +9,9 @@ php:
   - 7.4snapshot
   - nightly
 
-allow_failures:
-  - php: nightly
+matrix:
+  allow_failures:
+    - php: nightly
 
 before_script:
   - composer install --no-interaction
