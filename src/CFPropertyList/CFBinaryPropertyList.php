@@ -965,7 +965,7 @@ abstract class CFBinaryPropertyList
             $utf16 = false;
 
             for ($i=0; $i<strlen($val); ++$i) {
-                if (ord($val{$i}) >= 128) {
+                if (ord($val[$i]) >= 128) {
                     $utf16 = true;
                     break;
                 }
