@@ -941,7 +941,7 @@ abstract class CFBinaryPropertyList
     protected static function binaryStrlen($val)
     {
         for ($i=0; $i<strlen($val); ++$i) {
-            if (ord($val{$i}) >= 128) {
+            if (ord($val[$i]) >= 128) {
                 $val = self::convertCharset($val, 'UTF-8', 'UTF-16BE');
                 return strlen($val);
             }
