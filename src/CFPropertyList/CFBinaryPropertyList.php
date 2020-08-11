@@ -51,81 +51,81 @@ namespace CFPropertyList;
  */
 abstract class CFBinaryPropertyList
 {
-    /**
-     * Content of the plist (unparsed string)
-     * @var string
-     */
+  /**
+   * Content of the plist (unparsed string)
+   * @var string
+   */
     protected $content = null;
 
-    /**
-     * position in the (unparsed) string
-     * @var integer
-     */
+  /**
+   * position in the (unparsed) string
+   * @var integer
+   */
     protected $pos = 0;
 
-    /**
-     * Table containing uniqued objects
-     * @var array
-     */
-    protected $uniqueTable = [];
+  /**
+   * Table containing uniqued objects
+   * @var array
+   */
+    protected $uniqueTable = array();
 
-    /**
-     * Number of objects in file
-     * @var integer
-     */
+  /**
+   * Number of objects in file
+   * @var integer
+   */
     protected $countObjects = 0;
 
-    /**
-     * The length of all strings in the file (byte length, not character length)
-     * @var integer
-     */
+  /**
+   * The length of all strings in the file (byte length, not character length)
+   * @var integer
+   */
     protected $stringSize = 0;
 
-    /**
-     * The length of all ints in file (byte length)
-     * @var integer
-     */
+  /**
+   * The length of all ints in file (byte length)
+   * @var integer
+   */
     protected $intSize = 0;
 
-    /**
-     * The length of misc objects (i.e. not integer and not string) in file
-     * @var integer
-     */
+  /**
+   * The length of misc objects (i.e. not integer and not string) in file
+   * @var integer
+   */
     protected $miscSize = 0;
 
-    /**
-     * Number of object references in file (needed to calculate reference byte length)
-     * @var integer
-     */
+  /**
+   * Number of object references in file (needed to calculate reference byte length)
+   * @var integer
+   */
     protected $objectRefs = 0;
 
-    /**
-     * Number of objects written during save phase; needed to calculate the size of the object table
-     * @var integer
-     */
+  /**
+   * Number of objects written during save phase; needed to calculate the size of the object table
+   * @var integer
+   */
     protected $writtenObjectCount = 0;
 
-    /**
-     * Table containing all objects in the file
-     */
-    protected $objectTable = [];
+  /**
+   * Table containing all objects in the file
+   */
+    protected $objectTable = array();
 
-    /**
-     * The size of object references
-     */
+  /**
+   * The size of object references
+   */
     protected $objectRefSize = 0;
 
-    /**
-     * The „offsets” (i.e. the different entries) in the file
-     */
-    protected $offsets = [];
+  /**
+   * The „offsets” (i.e. the different entries) in the file
+   */
+    protected $offsets = array();
 
-    /**
-     * Read a „null type” (filler byte, true, false, 0 byte)
-     * @param $length The byte itself
-     * @return the byte value (e.g. CFBoolean(true), CFBoolean(false), 0 or 15)
-     * @throws PListException on encountering an unknown null type
-     */
+  /**
+   * Read a „null type” (filler byte, true, false, 0 byte)
+   * @param $length The byte itself
+   * @return the byte value (e.g. CFBoolean(true), CFBoolean(false), 0 or 15)
+   * @throws PListException on encountering an unknown null type
+   */
     protected function readBinaryNullType($length)
     {
         switch ($length) {
@@ -142,24 +142,24 @@ abstract class CFBinaryPropertyList
         throw new PListException("unknown null type: $length");
     }
 
-    /**
-     * Create an 64 bit integer using bcmath or gmp
-     * @param int $hi The higher word
-     * @param int $lo The lower word
-     * @return mixed The integer (as int if possible, as string if not possible)
-     * @throws PListException if neither gmp nor bc available
-     */
+  /**
+   * Create an 64 bit integer using bcmath or gmp
+   * @param int $hi The higher word
+   * @param int $lo The lower word
+   * @return mixed The integer (as int if possible, as string if not possible)
+   * @throws PListException if neither gmp nor bc available
+   */
     protected static function make64Int($hi, $lo)
     {
-        // on x64, we can just use int
+      // on x64, we can just use int
         if (PHP_INT_SIZE > 4) {
-            return (((int) $hi) << 32) | ((int) $lo);
+            return (((int)$hi)<<32) | ((int)$lo);
         }
 
-        // lower word has to be unsigned since we don't use bitwise or, we use bcadd/gmp_add
+      // lower word has to be unsigned since we don't use bitwise or, we use bcadd/gmp_add
         $lo = sprintf("%u", $lo);
 
-        // use GMP or bcmath if possible
+      // use GMP or bcmath if possible
         if (function_exists("gmp_mul")) {
             return gmp_strval(gmp_add(gmp_mul($hi, "4294967296"), $lo));
         }
@@ -176,14 +176,14 @@ abstract class CFBinaryPropertyList
         throw new PListException("either gmp or bc has to be installed, or the Math_BigInteger has to be available!");
     }
 
-    /**
-     * Read an integer value
-     * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
-     * @return CFNumber The integer value
-     * @throws PListException if integer val is invalid
-     * @throws IOException if read error occurs
-     * @uses make64Int() to overcome PHP's big integer problems
-     */
+  /**
+   * Read an integer value
+   * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
+   * @return CFNumber The integer value
+   * @throws PListException if integer val is invalid
+   * @throws IOException if read error occurs
+   * @uses make64Int() to overcome PHP's big integer problems
+   */
     protected function readBinaryInt($length)
     {
         if ($length > 3) {
@@ -213,7 +213,7 @@ abstract class CFBinaryPropertyList
                 break;
             case 3:
                 $words = unpack("Nhighword/Nlowword", $buff);
-                //$val = $words['highword'] << 32 | $words['lowword'];
+              //$val = $words['highword'] << 32 | $words['lowword'];
                 $val = self::make64Int($words['highword'], $words['lowword']);
                 break;
         }
@@ -221,13 +221,13 @@ abstract class CFBinaryPropertyList
         return new CFNumber($val);
     }
 
-    /**
-     * Read a real value
-     * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
-     * @return CFNumber The real value
-     * @throws PListException if real val is invalid
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read a real value
+   * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
+   * @return CFNumber The real value
+   * @throws PListException if real val is invalid
+   * @throws IOException if read error occurs
+   */
     protected function readBinaryReal($length)
     {
         if ($length > 3) {
@@ -235,17 +235,15 @@ abstract class CFBinaryPropertyList
         }
 
         $nbytes = 1 << $length;
-        $val    = null;
+        $val = null;
         if (strlen($buff = substr($this->content, $this->pos, $nbytes)) != $nbytes) {
             throw IOException::readError("");
         }
         $this->pos += $nbytes;
 
         switch ($length) {
-            case 0:
-            // 1 byte float? must be an error
-            case 1:
-                // 2 byte float? must be an error
+            case 0: // 1 byte float? must be an error
+            case 1: // 2 byte float? must be an error
                 $x = $length + 1;
                 throw new PListException("got {$x} byte float, must be an error!");
             case 2:
@@ -261,13 +259,13 @@ abstract class CFBinaryPropertyList
         return new CFNumber($val);
     }
 
-    /**
-     * Read a date value
-     * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
-     * @return CFDate The date value
-     * @throws PListException if date val is invalid
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read a date value
+   * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
+   * @return CFDate The date value
+   * @throws PListException if date val is invalid
+   * @throws IOException if read error occurs
+   */
     protected function readBinaryDate($length)
     {
         if ($length > 3) {
@@ -275,17 +273,15 @@ abstract class CFBinaryPropertyList
         }
 
         $nbytes = 1 << $length;
-        $val    = null;
+        $val = null;
         if (strlen($buff = substr($this->content, $this->pos, $nbytes)) != $nbytes) {
             throw IOException::readError("");
         }
         $this->pos += $nbytes;
 
         switch ($length) {
-            case 0:
-            // 1 byte CFDate is an error
-            case 1:
-                // 2 byte CFDate is an error
+            case 0: // 1 byte CFDate is an error
+            case 1: // 2 byte CFDate is an error
                 $x = $length + 1;
                 throw new PListException("{$x} byte CFdate, error");
 
@@ -302,12 +298,12 @@ abstract class CFBinaryPropertyList
         return new CFDate($val, CFDate::TIMESTAMP_APPLE);
     }
 
-    /**
-     * Read a data value
-     * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
-     * @return CFData The data value
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read a data value
+   * @param integer $length The length (in bytes) of the integer value, coded as „set bit $length to 1”
+   * @return CFData The data value
+   * @throws IOException if read error occurs
+   */
     protected function readBinaryData($length)
     {
         if ($length == 0) {
@@ -323,12 +319,12 @@ abstract class CFBinaryPropertyList
         return new CFData($buff, false);
     }
 
-    /**
-     * Read a string value, usually coded as utf8
-     * @param integer $length The length (in bytes) of the string value
-     * @return CFString The string value, utf8 encoded
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read a string value, usually coded as utf8
+   * @param integer $length The length (in bytes) of the string value
+   * @return CFString The string value, utf8 encoded
+   * @throws IOException if read error occurs
+   */
     protected function readBinaryString($length)
     {
         if ($length == 0) {
@@ -346,15 +342,15 @@ abstract class CFBinaryPropertyList
         return new CFString($buff);
     }
 
-    /**
-     * Convert the given string from one charset to another.
-     * Trying to use MBString, Iconv, Recode - in that particular order.
-     * @param string $string the string to convert
-     * @param string $fromCharset the charset the given string is currently encoded in
-     * @param string $toCharset the charset to convert to, defaults to UTF-8
-     * @return string the converted string
-     * @throws PListException on neither MBString, Iconv, Recode being available
-     */
+  /**
+   * Convert the given string from one charset to another.
+   * Trying to use MBString, Iconv, Recode - in that particular order.
+   * @param string $string the string to convert
+   * @param string $fromCharset the charset the given string is currently encoded in
+   * @param string $toCharset the charset to convert to, defaults to UTF-8
+   * @return string the converted string
+   * @throws PListException on neither MBString, Iconv, Recode being available
+   */
     public static function convertCharset($string, $fromCharset, $toCharset = 'UTF-8')
     {
         if (function_exists('mb_convert_encoding')) {
@@ -364,20 +360,20 @@ abstract class CFBinaryPropertyList
             return iconv($fromCharset, $toCharset, $string);
         }
         if (function_exists('recode_string')) {
-            return recode_string($fromCharset . '..' . $toCharset, $string);
+            return recode_string($fromCharset .'..'. $toCharset, $string);
         }
 
         throw new PListException('neither iconv nor mbstring supported. how are we supposed to work on strings here?');
     }
 
-    /**
-     * Count characters considering character set
-     * Trying to use MBString, Iconv - in that particular order.
-     * @param string $string the string to convert
-     * @param string $charset the charset the given string is currently encoded in
-     * @return integer The number of characters in that string
-     * @throws PListException on neither MBString, Iconv being available
-     */
+  /**
+   * Count characters considering character set
+   * Trying to use MBString, Iconv - in that particular order.
+   * @param string $string the string to convert
+   * @param string $charset the charset the given string is currently encoded in
+   * @return integer The number of characters in that string
+   * @throws PListException on neither MBString, Iconv being available
+   */
     public static function charsetStrlen($string, $charset = "UTF-8")
     {
         if (function_exists('mb_strlen')) {
@@ -390,18 +386,18 @@ abstract class CFBinaryPropertyList
         throw new PListException('neither iconv nor mbstring supported. how are we supposed to work on strings here?');
     }
 
-    /**
-     * Read a unicode string value, coded as UTF-16BE
-     * @param integer $length The length (in bytes) of the string value
-     * @return CFString The string value, utf8 encoded
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read a unicode string value, coded as UTF-16BE
+   * @param integer $length The length (in bytes) of the string value
+   * @return CFString The string value, utf8 encoded
+   * @throws IOException if read error occurs
+   */
     protected function readBinaryUnicodeString($length)
     {
-        /* The problem is: we get the length of the string IN CHARACTERS;
-        since a char in UTF-16 can be 16 or 32 bit long, we don't really know
-        how long the string is in bytes */
-        if (strlen($buff = substr($this->content, $this->pos, 2 * $length)) != 2 * $length) {
+      /* The problem is: we get the length of the string IN CHARACTERS;
+         since a char in UTF-16 can be 16 or 32 bit long, we don't really know
+         how long the string is in bytes */
+        if (strlen($buff = substr($this->content, $this->pos, 2*$length)) != 2*$length) {
             throw IOException::readError("");
         }
         $this->pos += 2 * $length;
@@ -412,17 +408,17 @@ abstract class CFBinaryPropertyList
         return new CFString(self::convertCharset($buff, "UTF-16BE", "UTF-8"));
     }
 
-    /**
-     * Read an array value, including contained objects
-     * @param integer $length The number of contained objects
-     * @return CFArray The array value, including the objects
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read an array value, including contained objects
+   * @param integer $length The number of contained objects
+   * @return CFArray The array value, including the objects
+   * @throws IOException if read error occurs
+   */
     protected function readBinaryArray($length)
     {
         $ary = new CFArray();
 
-        // first: read object refs
+      // first: read object refs
         if ($length != 0) {
             if (strlen($buff = substr($this->content, $this->pos, $length * $this->objectRefSize)) != $length * $this->objectRefSize) {
                 throw IOException::readError("");
@@ -431,9 +427,9 @@ abstract class CFBinaryPropertyList
 
             $objects = self::unpackWithSize($this->objectRefSize, $buff);
 
-            // now: read objects
-            for ($i = 0; $i < $length; ++$i) {
-                $object = $this->readBinaryObjectAt($objects[$i + 1] + 1);
+          // now: read objects
+            for ($i=0; $i<$length; ++$i) {
+                $object = $this->readBinaryObjectAt($objects[$i+1]+1);
                 $ary->add($object);
             }
         }
@@ -441,12 +437,12 @@ abstract class CFBinaryPropertyList
         return $ary;
     }
 
-    /**
-     * Read a dictionary value, including contained objects
-     * @param integer $length The number of contained objects
-     * @return CFDictionary The dictionary value, including the objects
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read a dictionary value, including contained objects
+   * @param integer $length The number of contained objects
+   * @return CFDictionary The dictionary value, including the objects
+   * @throws IOException if read error occurs
+   */
     protected function readBinaryDict($length)
     {
         $dict = new CFDictionary();
@@ -467,9 +463,9 @@ abstract class CFBinaryPropertyList
             $objects = self::unpackWithSize($this->objectRefSize, $buff);
 
             // read real keys and objects
-            for ($i = 0; $i < $length; ++$i) {
-                $key    = $this->readBinaryObjectAt($keys[$i + 1] + 1);
-                $object = $this->readBinaryObjectAt($objects[$i + 1] + 1);
+            for ($i=0; $i<$length; ++$i) {
+                $key = $this->readBinaryObjectAt($keys[$i+1]+1);
+                $object = $this->readBinaryObjectAt($objects[$i+1]+1);
                 $dict->add($key->getValue(), $object);
             }
         }
@@ -477,11 +473,11 @@ abstract class CFBinaryPropertyList
         return $dict;
     }
 
-    /**
-     * Read an object type byte, decode it and delegate to the correct reader function
-     * @return mixed The value of the delegate reader, so any of the CFType subclasses
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read an object type byte, decode it and delegate to the correct reader function
+   * @return mixed The value of the delegate reader, so any of the CFType subclasses
+   * @throws IOException if read error occurs
+   */
     public function readBinaryObject()
     {
         // first: read the marker byte
@@ -491,9 +487,9 @@ abstract class CFBinaryPropertyList
         $this->pos++;
 
         $object_length = unpack("C*", $buff);
-        $object_length = $object_length[1] & 0xF;
-        $buff          = unpack("H*", $buff);
-        $buff          = $buff[1];
+        $object_length = $object_length[1]  & 0xF;
+        $buff = unpack("H*", $buff);
+        $buff = $buff[1];
 
         $object_type = substr($buff, 0, 1);
         if ($object_type != "0" && $object_length == 15) {
@@ -503,44 +499,35 @@ abstract class CFBinaryPropertyList
 
         $retval = null;
         switch ($object_type) {
-            case '0':
-                // null, false, true, fillbyte
+            case '0': // null, false, true, fillbyte
                 $retval = $this->readBinaryNullType($object_length);
                 break;
-            case '1':
-                // integer
+            case '1': // integer
                 $retval = $this->readBinaryInt($object_length);
                 break;
-            case '2':
-                // real
+            case '2': // real
                 $retval = $this->readBinaryReal($object_length);
                 break;
-            case '3':
-                // date
+            case '3': // date
                 $retval = $this->readBinaryDate($object_length);
                 break;
-            case '4':
-                // data
+            case '4': // data
                 $retval = $this->readBinaryData($object_length);
                 break;
-            case '5':
-                // byte string, usually utf8 encoded
+            case '5': // byte string, usually utf8 encoded
                 $retval = $this->readBinaryString($object_length);
                 break;
-            case '6':
-                // unicode string (utf16be)
+            case '6': // unicode string (utf16be)
                 $retval = $this->readBinaryUnicodeString($object_length);
                 break;
             case '8':
-                $num    = $this->readBinaryInt($object_length);
+                $num = $this->readBinaryInt($object_length);
                 $retval = new CFUid($num->getValue());
                 break;
-            case 'a':
-                // array
+            case 'a': // array
                 $retval = $this->readBinaryArray($object_length);
                 break;
-            case 'd':
-                // dictionary
+            case 'd': // dictionary
                 $retval = $this->readBinaryDict($object_length);
                 break;
         }
@@ -548,36 +535,36 @@ abstract class CFBinaryPropertyList
         return $retval;
     }
 
-    /**
-     * Read an object type byte at position $pos, decode it and delegate to the correct reader function
-     * @param integer $pos The table position in the offsets table
-     * @return mixed The value of the delegate reader, so any of the CFType subclasses
-     */
+  /**
+   * Read an object type byte at position $pos, decode it and delegate to the correct reader function
+   * @param integer $pos The table position in the offsets table
+   * @return mixed The value of the delegate reader, so any of the CFType subclasses
+   */
     public function readBinaryObjectAt($pos)
     {
         $this->pos = $this->offsets[$pos];
         return $this->readBinaryObject();
     }
 
-    /**
-     * Parse a binary plist string
-     * @return void
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Parse a binary plist string
+   * @return void
+   * @throws IOException if read error occurs
+   */
     public function parseBinaryString()
     {
-        $this->uniqueTable  = [];
+        $this->uniqueTable = array();
         $this->countObjects = 0;
-        $this->stringSize   = 0;
-        $this->intSize      = 0;
-        $this->miscSize     = 0;
-        $this->objectRefs   = 0;
+        $this->stringSize = 0;
+        $this->intSize = 0;
+        $this->miscSize = 0;
+        $this->objectRefs = 0;
 
         $this->writtenObjectCount = 0;
-        $this->objectTable        = [];
-        $this->objectRefSize      = 0;
+        $this->objectTable = array();
+        $this->objectRefSize = 0;
 
-        $this->offsets = [];
+        $this->offsets = array();
 
         // first, we read the trailer: 32 byte from the end
         $buff = substr($this->content, -32);
@@ -596,35 +583,35 @@ abstract class CFBinaryPropertyList
         $this->countObjects = $infos['number_of_objects'];
 
         // decode offset table
-        $formats = ["", "C*", "n*", null, "N*"];
+        $formats = array("","C*","n*",null,"N*");
         if ($infos['offset_size'] == 3) {
             /* since PHP does not support parenthesis in pack/unpack expressions,
-            "(H6)*" does not work and we have to work round this by repeating the
-            expression as often as it fits in the string
+               "(H6)*" does not work and we have to work round this by repeating the
+               expression as often as it fits in the string
              */
-            $this->offsets = [null];
+            $this->offsets = array(null);
             while ($coded_offset_table) {
-                $str                = unpack("H6", $coded_offset_table);
-                $this->offsets[]    = hexdec($str[1]);
+                $str = unpack("H6", $coded_offset_table);
+                $this->offsets[] = hexdec($str[1]);
                 $coded_offset_table = substr($coded_offset_table, 3);
             }
         } else {
             $this->offsets = unpack($formats[$infos['offset_size']], $coded_offset_table);
         }
 
-        $this->uniqueTable   = [];
+        $this->uniqueTable = array();
         $this->objectRefSize = $infos['object_ref_size'];
 
-        $top = $this->readBinaryObjectAt($infos['top_object'] + 1);
+        $top = $this->readBinaryObjectAt($infos['top_object']+1);
         $this->add($top);
     }
 
-    /**
-     * Read a binary plist stream
-     * @param resource $stream The stream to read
-     * @return void
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read a binary plist stream
+   * @param resource $stream The stream to read
+   * @return void
+   * @throws IOException if read error occurs
+   */
     public function readBinaryStream($stream)
     {
         if (($str = stream_get_contents($stream)) === false || empty($str)) {
@@ -634,12 +621,12 @@ abstract class CFBinaryPropertyList
         $this->parseBinary($str);
     }
 
-    /**
-     * parse a binary plist string
-     * @param string $content The stream to read, defaults to {@link $this->content}
-     * @return void
-     * @throws IOException if read error occurs
-     */
+  /**
+   * parse a binary plist string
+   * @param string $content The stream to read, defaults to {@link $this->content}
+   * @return void
+   * @throws IOException if read error occurs
+   */
     public function parseBinary($content = null)
     {
         if ($content !== null) {
@@ -659,12 +646,12 @@ abstract class CFBinaryPropertyList
         $this->parseBinaryString();
     }
 
-    /**
-     * Read a binary plist file
-     * @param string $file The file to read
-     * @return void
-     * @throws IOException if read error occurs
-     */
+  /**
+   * Read a binary plist file
+   * @param string $file The file to read
+   * @return void
+   * @throws IOException if read error occurs
+   */
     public function readBinary($file)
     {
         if (!($fd = fopen($file, "rb"))) {
@@ -675,11 +662,11 @@ abstract class CFBinaryPropertyList
         fclose($fd);
     }
 
-    /**
-     * calculate the bytes needed for a size integer value
-     * @param integer $int The integer value to calculate
-     * @return integer The number of bytes needed
-     */
+  /**
+   * calculate the bytes needed for a size integer value
+   * @param integer $int The integer value to calculate
+   * @return integer The number of bytes needed
+   */
     public static function bytesSizeInt($int)
     {
         $nbytes = 0;
@@ -697,11 +684,11 @@ abstract class CFBinaryPropertyList
         return $nbytes;
     }
 
-    /**
-     * Calculate the byte needed for a „normal” integer value
-     * @param integer $int The integer value
-     * @return integer The number of bytes needed + 1 (because of the „marker byte”)
-     */
+  /**
+   * Calculate the byte needed for a „normal” integer value
+   * @param integer $int The integer value
+   * @return integer The number of bytes needed + 1 (because of the „marker byte”)
+   */
     public static function bytesInt($int)
     {
         $nbytes = 1;
@@ -722,16 +709,16 @@ abstract class CFBinaryPropertyList
         return $nbytes + 1; // one „marker” byte
     }
 
-    /**
-     * „pack” a value (i.e. write the binary representation as big endian to a string) with the specified size
-     * @param integer $nbytes The number of bytes to pack
-     * @param integer $int The integer value to pack
-     * @return string The packed value as string
-     */
+  /**
+   * „pack” a value (i.e. write the binary representation as big endian to a string) with the specified size
+   * @param integer $nbytes The number of bytes to pack
+   * @param integer $int The integer value to pack
+   * @return string The packed value as string
+   */
     public static function packItWithSize($nbytes, $int)
     {
-        $formats = ["C", "n", "N", "N"];
-        $format  = $formats[$nbytes - 1];
+        $formats = array("C", "n", "N", "N");
+        $format = $formats[$nbytes-1];
 
         if ($nbytes == 3) {
             return substr(pack($format, $int), -3);
@@ -739,16 +726,16 @@ abstract class CFBinaryPropertyList
         return pack($format, $int);
     }
 
-    /**
-     * „unpack” multiple values of the specified size (i.e. get the integers from their binary representation) from a string
-     * @param integer $nbytes The number of bytes of each value to unpack
-     * @param integer $buff The string packed with integer values
-     * @return array The unpacked integers
-     */
+  /**
+   * „unpack” multiple values of the specified size (i.e. get the integers from their binary representation) from a string
+   * @param integer $nbytes The number of bytes of each value to unpack
+   * @param integer $buff The string packed with integer values
+   * @return array The unpacked integers
+   */
     public static function unpackWithSize($nbytes, $buff)
     {
-        $formats = ["C*", "n*", "N*", "N*"];
-        $format  = $formats[$nbytes - 1];
+        $formats = array("C*", "n*", "N*", "N*");
+        $format = $formats[$nbytes-1];
 
         if ($nbytes == 3) {
             $buff = "\0" . implode("\0", str_split($buff, 3));
@@ -756,11 +743,11 @@ abstract class CFBinaryPropertyList
         return unpack($format, $buff);
     }
 
-    /**
-     * Calculate the bytes needed to save the number of objects
-     * @param integer $count_objects The number of objects
-     * @return integer The number of bytes
-     */
+  /**
+   * Calculate the bytes needed to save the number of objects
+   * @param integer $count_objects The number of objects
+   * @return integer The number of bytes
+   */
     public static function bytesNeeded($count_objects)
     {
         $nbytes = 0;
@@ -773,32 +760,32 @@ abstract class CFBinaryPropertyList
         return $nbytes;
     }
 
-    /**
-     * Code an integer to byte representation
-     * @param integer $int The integer value
-     * @return string The packed byte value
-     */
+  /**
+   * Code an integer to byte representation
+   * @param integer $int The integer value
+   * @return string The packed byte value
+   */
     public static function intBytes($int)
     {
         $intbytes = "";
 
         if ($int > 0xFFFF) {
-            $intbytes = "\x12" . pack("N", $int); // 4 byte integer
+            $intbytes = "\x12".pack("N", $int); // 4 byte integer
         } elseif ($int > 0xFF) {
-            $intbytes = "\x11" . pack("n", $int); // 2 byte integer
+            $intbytes = "\x11".pack("n", $int); // 2 byte integer
         } else {
-            $intbytes = "\x10" . pack("C", $int); // 8 byte integer
+            $intbytes = "\x10".pack("C", $int); // 8 byte integer
         }
 
         return $intbytes;
     }
 
-    /**
-     * Code an type byte, consisting of the type marker and the length of the type
-     * @param string $type The type byte value (i.e. "d" for dictionaries)
-     * @param integer $type_len The length of the type
-     * @return string The packed type byte value
-     */
+  /**
+   * Code an type byte, consisting of the type marker and the length of the type
+   * @param string $type The type byte value (i.e. "d" for dictionaries)
+   * @param integer $type_len The length of the type
+   * @return string The packed type byte value
+   */
     public static function typeBytes($type, $type_len)
     {
         $optional_int = "";
@@ -810,17 +797,17 @@ abstract class CFBinaryPropertyList
             $optional_int = self::intBytes($type_len);
         }
 
-        return pack("H*", $type) . $optional_int;
+        return pack("H*", $type).$optional_int;
     }
 
-    /**
-     * Count number of objects and create a unique table for strings
-     * @param $value The value to count and unique
-     * @return void
-     */
+  /**
+   * Count number of objects and create a unique table for strings
+   * @param $value The value to count and unique
+   * @return void
+   */
     protected function uniqueAndCountValues($value)
     {
-        // no uniquing for other types than CFString and CFData
+      // no uniquing for other types than CFString and CFData
         if ($value instanceof CFNumber) {
             $val = $value->getValue();
             if (intval($val) == $val && !is_float($val) && strpos($val, '.') === false) {
@@ -856,7 +843,7 @@ abstract class CFBinaryPropertyList
                 ++$cnt;
                 if (!isset($this->uniqueTable[$k])) {
                     $this->uniqueTable[$k] = 0;
-                    $len                   = self::binaryStrlen($k);
+                    $len = self::binaryStrlen($k);
                     $this->stringSize += $len + 1;
                     $this->intSize += self::bytesSizeInt(self::charsetStrlen($k, 'UTF-8'));
                 }
@@ -883,59 +870,60 @@ abstract class CFBinaryPropertyList
 
         if (!isset($this->uniqueTable[$val])) {
             $this->uniqueTable[$val] = 0;
-            $len                     = self::binaryStrlen($val);
+            $len = self::binaryStrlen($val);
             $this->stringSize += $len + 1;
             $this->intSize += self::bytesSizeInt(self::charsetStrlen($val, 'UTF-8'));
         }
         $this->uniqueTable[$val]++;
     }
 
-    /**
-     * Convert CFPropertyList to binary format; since we have to count our objects we simply unique CFDictionary and CFArray
-     * @return string The binary plist content
-     */
+  /**
+   * Convert CFPropertyList to binary format; since we have to count our objects we simply unique CFDictionary and CFArray
+   * @return string The binary plist content
+   */
     public function toBinary()
     {
-        $this->uniqueTable  = [];
+        $this->uniqueTable = array();
         $this->countObjects = 0;
-        $this->stringSize   = 0;
-        $this->intSize      = 0;
-        $this->miscSize     = 0;
-        $this->objectRefs   = 0;
+        $this->stringSize = 0;
+        $this->intSize = 0;
+        $this->miscSize = 0;
+        $this->objectRefs = 0;
 
         $this->writtenObjectCount = 0;
-        $this->objectTable        = [];
-        $this->objectRefSize      = 0;
+        $this->objectTable = array();
+        $this->objectRefSize = 0;
 
-        $this->offsets = [];
+        $this->offsets = array();
 
         $binary_str = "bplist00";
-        $value      = $this->getValue(true);
+        $value = $this->getValue(true);
         $this->uniqueAndCountValues($value);
 
         $this->countObjects += count($this->uniqueTable);
         $this->objectRefSize = self::bytesNeeded($this->countObjects);
-        $file_size           = $this->stringSize + $this->intSize + $this->miscSize + $this->objectRefs * $this->objectRefSize + 40;
-        $offset_size         = self::bytesNeeded($file_size);
-        $table_offset        = $file_size - 32;
+        $file_size = $this->stringSize + $this->intSize + $this->miscSize + $this->objectRefs * $this->objectRefSize + 40;
+        $offset_size = self::bytesNeeded($file_size);
+        $table_offset = $file_size - 32;
 
-        $this->objectTable        = [];
+        $this->objectTable = array();
         $this->writtenObjectCount = 0;
-        $this->uniqueTable        = []; // we needed it to calculate several values
+        $this->uniqueTable = array(); // we needed it to calculate several values
         $value->toBinary($this);
 
         $object_offset = 8;
-        $offsets       = [];
+        $offsets = array();
 
-        for ($i = 0; $i < count($this->objectTable); ++$i) {
+        for ($i=0; $i<count($this->objectTable); ++$i) {
             $binary_str .= $this->objectTable[$i];
             $offsets[$i] = $object_offset;
             $object_offset += strlen($this->objectTable[$i]);
         }
 
-        for ($i = 0; $i < count($offsets); ++$i) {
+        for ($i=0; $i<count($offsets); ++$i) {
             $binary_str .= self::packItWithSize($offset_size, $offsets[$i]);
         }
+
 
         $binary_str .= pack("x6CC", $offset_size, $this->objectRefSize);
         $binary_str .= pack("x4N", $this->countObjects);
@@ -945,14 +933,14 @@ abstract class CFBinaryPropertyList
         return $binary_str;
     }
 
-    /**
-     * Counts the number of bytes the string will have when coded; utf-16be if non-ascii characters are present.
-     * @param string $val The string value
-     * @return integer The length of the coded string in bytes
-     */
+  /**
+   * Counts the number of bytes the string will have when coded; utf-16be if non-ascii characters are present.
+   * @param string $val The string value
+   * @return integer The length of the coded string in bytes
+   */
     protected static function binaryStrlen($val)
     {
-        for ($i = 0; $i < strlen($val); ++$i) {
+        for ($i=0; $i<strlen($val); ++$i) {
             if (ord($val[$i]) >= 128) {
                 $val = self::convertCharset($val, 'UTF-8', 'UTF-16BE');
                 return strlen($val);
@@ -962,21 +950,21 @@ abstract class CFBinaryPropertyList
         return strlen($val);
     }
 
-    /**
-     * Uniques and transforms a string value to binary format and adds it to the object table
-     * @param string $val The string value
-     * @return integer The position in the object table
-     */
+  /**
+   * Uniques and transforms a string value to binary format and adds it to the object table
+   * @param string $val The string value
+   * @return integer The position in the object table
+   */
     public function stringToBinary($val)
     {
         $saved_object_count = -1;
 
         if (!isset($this->uniqueTable[$val])) {
-            $saved_object_count      = $this->writtenObjectCount++;
+            $saved_object_count = $this->writtenObjectCount++;
             $this->uniqueTable[$val] = $saved_object_count;
-            $utf16                   = false;
+            $utf16 = false;
 
-            for ($i = 0; $i < strlen($val); ++$i) {
+            for ($i=0; $i<strlen($val); ++$i) {
                 if (ord($val[$i]) >= 128) {
                     $utf16 = true;
                     break;
@@ -984,12 +972,12 @@ abstract class CFBinaryPropertyList
             }
 
             if ($utf16) {
-                $bdata                                  = self::typeBytes("6", mb_strlen($val, 'UTF-8')); // 6 is 0110, unicode string (utf16be)
-                $val                                    = self::convertCharset($val, 'UTF-8', 'UTF-16BE');
-                $this->objectTable[$saved_object_count] = $bdata . $val;
+                $bdata = self::typeBytes("6", mb_strlen($val, 'UTF-8')); // 6 is 0110, unicode string (utf16be)
+                $val = self::convertCharset($val, 'UTF-8', 'UTF-16BE');
+                $this->objectTable[$saved_object_count] = $bdata.$val;
             } else {
-                $bdata                                  = self::typeBytes("5", strlen($val)); // 5 is 0101 which is an ASCII string (seems to be ASCII encoded)
-                $this->objectTable[$saved_object_count] = $bdata . $val;
+                $bdata = self::typeBytes("5", strlen($val)); // 5 is 0101 which is an ASCII string (seems to be ASCII encoded)
+                $this->objectTable[$saved_object_count] = $bdata.$val;
             }
         } else {
             $saved_object_count = $this->uniqueTable[$val];
@@ -998,11 +986,11 @@ abstract class CFBinaryPropertyList
         return $saved_object_count;
     }
 
-    /**
-     * Codes an integer to binary format
-     * @param integer $value The integer value
-     * @return string the coded integer
-     */
+  /**
+   * Codes an integer to binary format
+   * @param integer $value The integer value
+   * @return string the coded integer
+   */
     protected function intToBinary($value)
     {
         $nbytes = 0;
@@ -1020,7 +1008,7 @@ abstract class CFBinaryPropertyList
         }
 
         $bdata = self::typeBytes("1", $nbytes); // 1 is 0001, type indicator for integer
-        $buff  = "";
+        $buff = "";
 
         if ($nbytes < 3) {
             if ($nbytes == 0) {
@@ -1034,9 +1022,9 @@ abstract class CFBinaryPropertyList
             $buff = pack($fmt, $value);
         } else {
             if (PHP_INT_SIZE > 4) {
-                // 64 bit signed integer; we need the higher and the lower 32 bit of the value
+              // 64 bit signed integer; we need the higher and the lower 32 bit of the value
                 $high_word = $value >> 32;
-                $low_word  = $value & 0xFFFFFFFF;
+                $low_word = $value & 0xFFFFFFFF;
             } else {
                 // since PHP can only handle 32bit signed, we can only get 32bit signed values at this point - values above 0x7FFFFFFF are
                 // floats. So we ignore the existance of 64bit on non-64bit-machines
@@ -1047,27 +1035,23 @@ abstract class CFBinaryPropertyList
                 }
                 $low_word = $value;
             }
-            $buff = pack("N", $high_word) . pack("N", $low_word);
+            $buff = pack("N", $high_word).pack("N", $low_word);
         }
 
-        return $bdata . $buff;
+        return $bdata.$buff;
     }
 
-    /**
-     * Codes a real value to binary format
-     * @param float $val The real value
-     * @return string The coded real
-     */
+  /**
+   * Codes a real value to binary format
+   * @param float $val The real value
+   * @return string The coded real
+   */
     protected function realToBinary($val)
     {
         $bdata = self::typeBytes("2", 3); // 2 is 0010, type indicator for reals
-        return $bdata . strrev(pack("d", (float) $val));
+        return $bdata.strrev(pack("d", (float)$val));
     }
 
-    /**
-     * @param $value
-     * @return mixed
-     */
     public function uidToBinary($value)
     {
         $saved_object_count = $this->writtenObjectCount++;
@@ -1089,7 +1073,7 @@ abstract class CFBinaryPropertyList
         }
 
         $bdata = self::typeBytes("1000", $nbytes); // 1 is 0001, type indicator for integer
-        $buff  = "";
+        $buff = "";
 
         if ($nbytes < 3) {
             if ($nbytes == 0) {
@@ -1105,7 +1089,7 @@ abstract class CFBinaryPropertyList
             if (PHP_INT_SIZE > 4) {
                 // 64 bit signed integer; we need the higher and the lower 32 bit of the value
                 $high_word = $value >> 32;
-                $low_word  = $value & 0xFFFFFFFF;
+                $low_word = $value & 0xFFFFFFFF;
             } else {
                 // since PHP can only handle 32bit signed, we can only get 32bit signed values at this point - values above 0x7FFFFFFF are
                 // floats. So we ignore the existance of 64bit on non-64bit-machines
@@ -1116,20 +1100,20 @@ abstract class CFBinaryPropertyList
                 }
                 $low_word = $value;
             }
-            $buff = pack("N", $high_word) . pack("N", $low_word);
+            $buff = pack("N", $high_word).pack("N", $low_word);
         }
 
-        $val = $bdata . $buff;
+        $val = $bdata.$buff;
 
         $this->objectTable[$saved_object_count] = $val;
         return $saved_object_count;
     }
 
-    /**
-     * Converts a numeric value to binary and adds it to the object table
-     * @param numeric $value The numeric value
-     * @return integer The position in the object table
-     */
+  /**
+   * Converts a numeric value to binary and adds it to the object table
+   * @param numeric $value The numeric value
+   * @return integer The position in the object table
+   */
     public function numToBinary($value)
     {
         $saved_object_count = $this->writtenObjectCount++;
@@ -1145,62 +1129,62 @@ abstract class CFBinaryPropertyList
         return $saved_object_count;
     }
 
-    /**
-     * Convert date value (apple format) to binary and adds it to the object table
-     * @param integer $value The date value
-     * @return integer The position of the coded value in the object table
-     */
+  /**
+   * Convert date value (apple format) to binary and adds it to the object table
+   * @param integer $value The date value
+   * @return integer The position of the coded value in the object table
+   */
     public function dateToBinary($val)
     {
         $saved_object_count = $this->writtenObjectCount++;
 
         $hour = gmdate("H", $val);
-        $min  = gmdate("i", $val);
-        $sec  = gmdate("s", $val);
+        $min = gmdate("i", $val);
+        $sec = gmdate("s", $val);
         $mday = gmdate("j", $val);
-        $mon  = gmdate("n", $val);
+        $mon = gmdate("n", $val);
         $year = gmdate("Y", $val);
 
         $val = gmmktime($hour, $min, $sec, $mon, $mday, $year) - CFDate::DATE_DIFF_APPLE_UNIX; // CFDate is a real, number of seconds since 01/01/2001 00:00:00 GMT
 
-        $bdata                                  = self::typeBytes("3", 3); // 3 is 0011, type indicator for date
-        $this->objectTable[$saved_object_count] = $bdata . strrev(pack("d", $val));
+        $bdata = self::typeBytes("3", 3); // 3 is 0011, type indicator for date
+        $this->objectTable[$saved_object_count] = $bdata.strrev(pack("d", $val));
 
         return $saved_object_count;
     }
 
-    /**
-     * Convert a bool value to binary and add it to the object table
-     * @param bool $val The boolean value
-     * @return integer The position in the object table
-     */
+  /**
+   * Convert a bool value to binary and add it to the object table
+   * @param bool $val The boolean value
+   * @return integer The position in the object table
+   */
     public function boolToBinary($val)
     {
-        $saved_object_count                     = $this->writtenObjectCount++;
+        $saved_object_count = $this->writtenObjectCount++;
         $this->objectTable[$saved_object_count] = $val ? "\x9" : "\x8"; // 0x9 is 1001, type indicator for true; 0x8 is 1000, type indicator for false
         return $saved_object_count;
     }
 
-    /**
-     * Convert data value to binary format and add it to the object table
-     * @param string $val The data value
-     * @return integer The position in the object table
-     */
+  /**
+   * Convert data value to binary format and add it to the object table
+   * @param string $val The data value
+   * @return integer The position in the object table
+   */
     public function dataToBinary($val)
     {
         $saved_object_count = $this->writtenObjectCount++;
 
-        $bdata                                  = self::typeBytes("4", strlen($val)); // a is 1000, type indicator for data
-        $this->objectTable[$saved_object_count] = $bdata . $val;
+        $bdata = self::typeBytes("4", strlen($val)); // a is 1000, type indicator for data
+        $this->objectTable[$saved_object_count] = $bdata.$val;
 
         return $saved_object_count;
     }
 
-    /**
-     * Convert array to binary format and add it to the object table
-     * @param CFArray $val The array to convert
-     * @return integer The position in the object table
-     */
+  /**
+   * Convert array to binary format and add it to the object table
+   * @param CFArray $val The array to convert
+   * @return integer The position in the object table
+   */
     public function arrayToBinary($val)
     {
         $saved_object_count = $this->writtenObjectCount++;
@@ -1216,15 +1200,15 @@ abstract class CFBinaryPropertyList
         return $saved_object_count;
     }
 
-    /**
-     * Convert dictionary to binary format and add it to the object table
-     * @param CFDictionary $val The dict to convert
-     * @return integer The position in the object table
-     */
+  /**
+   * Convert dictionary to binary format and add it to the object table
+   * @param CFDictionary $val The dict to convert
+   * @return integer The position in the object table
+   */
     public function dictToBinary($val)
     {
         $saved_object_count = $this->writtenObjectCount++;
-        $bdata              = self::typeBytes("d", count($val->getValue())); // d=1101, type indicator for dictionary
+        $bdata = self::typeBytes("d", count($val->getValue())); // d=1101, type indicator for dictionary
 
         foreach ($val as $k => $v) {
             $str = new CFString($k);
