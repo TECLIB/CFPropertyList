@@ -5,3 +5,5 @@ vendor
 .foundation
 Makefile
 .DS_Store
+.vscode
+node-modules

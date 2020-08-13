@@ -1,0 +1,37 @@
+language: php
+
+php:
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+  - 7.3
+  - 7.4
+  - nightly
+
+matrix:
+  allow_failures:
+    - php: nightly
+
+before_script:
+  - composer install --no-interaction
+
+script:
+  - vendor/bin/phpunit tests/unit
+  - vendor/bin/phpunit tests/functional
+  - vendor/bin/phpcs --standard=PSR2 -n src/ tests/
+  - php examples/example-create-01.php
+  - php examples/example-create-02.php
+  - php examples/example-create-03.php
+  - php examples/example-create-04.php
+  - php examples/example-modify-01.php
+  - php examples/example-read-01.php
+  - php examples/example-read-02.php
+  - php examples/example-read-03.php
+  - php examples/example-read-04.php
+  - php examples/example-read-05.php
+  - php examples/example-read-06.php
+
+cache:
+  directories:
+    - "$HOME/.composer/cache"

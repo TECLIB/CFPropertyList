@@ -32,44 +32,52 @@
  * SOFTWARE.
  *
  * ------------------------------------------------------------------------------
+ * @author    Rodney Rehm <rodney.rehm@medialize.de>
  * @author    Christian Kruse <cjk@wwwtech.de>
  * @copyright Copyright © 2018 Teclib
  * @package   plist
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
+ * @link      http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html Property Lists
  * ------------------------------------------------------------------------------
  */
 
- /**
- * Examples for how to use CFPropertyList
- * Read an XML PropertyList
- * @package plist
- * @subpackage plist.examples
- */
 namespace CFPropertyList;
 
-// just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+use \DOMDocument;
+use \Iterator;
+use \ArrayAccess;
 
 /**
- * Require CFPropertyList
+ * Number Type  of CFPropertyList
+ * {@link http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html Property Lists}
  */
-require_once(__DIR__.'/../vendor/autoload.php');
+class CFNumber extends CFType
+{
+  /**
+   * Get XML-Node.
+   * Returns &lt;real&gt; if $value is a float, &lt;integer&gt; if $value is an integer.
+   * @param DOMDocument $doc DOMDocument to create DOMNode in
+   * @param string $nodeName For compatibility reasons; just ignore it
+   * @return DOMNode &lt;real&gt; or &lt;integer&gt;-Element
+   */
+    public function toXML(DOMDocument $doc, $nodeName = "")
+    {
+        $ret = 'real';
+        if (intval($this->value) == $this->value && !is_float($this->value) && strpos($this->value, '.') === false) {
+            $this->value = intval($this->value);
+            $ret = 'integer';
+        }
+        return parent::toXML($doc, $ret);
+    }
 
-
-/*
- * create a new CFPropertyList instance which loads the sample.plist on construct.
- * since we know it's an XML file, we can skip format-determination
- */
-$plist = new CFPropertyList( __DIR__.'/sample.xml.plist', CFPropertyList::FORMAT_XML );
-
-/*
- * retrieve the array structure of sample.plist and dump to stdout
- */
-
-echo '<pre>';
-var_dump( $plist->toArray() );
-echo '</pre>';
-
-?>
+  /**
+   * convert value to binary representation
+   * @param CFBinaryPropertyList The binary property list object
+   * @return The offset in the object table
+   */
+    public function toBinary(CFBinaryPropertyList &$bplist)
+    {
+        return $bplist->numToBinary($this->value);
+    }
+}
