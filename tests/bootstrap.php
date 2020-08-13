@@ -32,44 +32,25 @@
  * SOFTWARE.
  *
  * ------------------------------------------------------------------------------
+ * @author    Rodney Rehm <rodney.rehm@medialize.de>
  * @author    Christian Kruse <cjk@wwwtech.de>
+ * @author    Thierry Bugier <tbugier@teclib.com>
  * @copyright Copyright © 2018 Teclib
  * @package   plist
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
+ * @link      http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html Property Lists
  * ------------------------------------------------------------------------------
  */
 
- /**
- * Examples for how to use CFPropertyList
- * Read an XML PropertyList
- * @package plist
- * @subpackage plist.examples
- */
-namespace CFPropertyList;
+error_reporting(E_ALL|E_STRICT);
+ini_set('display_errors', 'on');
 
-// just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+require_once(__DIR__ . '/../vendor/autoload.php');
 
-/**
- * Require CFPropertyList
- */
-require_once(__DIR__.'/../vendor/autoload.php');
-
-
-/*
- * create a new CFPropertyList instance which loads the sample.plist on construct.
- * since we know it's an XML file, we can skip format-determination
- */
-$plist = new CFPropertyList( __DIR__.'/sample.xml.plist', CFPropertyList::FORMAT_XML );
-
-/*
- * retrieve the array structure of sample.plist and dump to stdout
- */
-
-echo '<pre>';
-var_dump( $plist->toArray() );
-echo '</pre>';
-
-?>
+define('TEST_UID_XML_PLIST', __DIR__ . '/uid-list.xml');
+define('TEST_BINARY_DATA_FILE', __DIR__.'/binary-data.plist');
+define('TEST_UID_BPLIST', __DIR__ . '/uid-list.plist');
+define('TEST_XML_DATA_FILE', __DIR__.'/xml-data.plist');
+define('WRITE_XML_DATA_FILE', __DIR__.'/binary.plist');
+define('WRITE_BINARY_DATA_FILE', __DIR__.'/binary.plist');

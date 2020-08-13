@@ -32,44 +32,34 @@
  * SOFTWARE.
  *
  * ------------------------------------------------------------------------------
- * @author    Christian Kruse <cjk@wwwtech.de>
+ * @author    maciej.majewski
  * @copyright Copyright © 2018 Teclib
  * @package   plist
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
+ * @link      http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html Property Lists
  * ------------------------------------------------------------------------------
  */
 
- /**
- * Examples for how to use CFPropertyList
- * Read an XML PropertyList
- * @package plist
- * @subpackage plist.examples
- */
 namespace CFPropertyList;
 
-// just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+class EmptyElementsTest extends \PHPUnit\Framework\TestCase
+{
+    public function testWriteFile()
+    {
+        $expected = '<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict><key>string</key><string></string><key>number</key><integer>0</integer><key>double</key><real>0</real></dict></plist>
+';
 
-/**
- * Require CFPropertyList
- */
-require_once(__DIR__.'/../vendor/autoload.php');
+        $plist = new CFPropertyList();
+        $dict = new CFDictionary();
 
+        $dict->add('string', new CFString(''));
+        $dict->add('number', new CFNumber(0));
+        $dict->add('double', new CFNumber(0.0));
 
-/*
- * create a new CFPropertyList instance which loads the sample.plist on construct.
- * since we know it's an XML file, we can skip format-determination
- */
-$plist = new CFPropertyList( __DIR__.'/sample.xml.plist', CFPropertyList::FORMAT_XML );
-
-/*
- * retrieve the array structure of sample.plist and dump to stdout
- */
-
-echo '<pre>';
-var_dump( $plist->toArray() );
-echo '</pre>';
-
-?>
+        $plist->add($dict);
+        $this->assertEquals($expected, $plist->toXML());
+    }
+}

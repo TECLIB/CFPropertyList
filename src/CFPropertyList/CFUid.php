@@ -32,44 +32,37 @@
  * SOFTWARE.
  *
  * ------------------------------------------------------------------------------
+ * @author    Rodney Rehm <rodney.rehm@medialize.de>
  * @author    Christian Kruse <cjk@wwwtech.de>
  * @copyright Copyright © 2018 Teclib
  * @package   plist
  * @license   MIT
  * @link      https://github.com/TECLIB/CFPropertyList/
+ * @link      http://developer.apple.com/documentation/Darwin/Reference/ManPages/man5/plist.5.html Property Lists
  * ------------------------------------------------------------------------------
  */
 
- /**
- * Examples for how to use CFPropertyList
- * Read an XML PropertyList
- * @package plist
- * @subpackage plist.examples
- */
 namespace CFPropertyList;
 
-// just in case...
-error_reporting( E_ALL );
-ini_set( 'display_errors', 'on' );
+use \DOMDocument;
+use \Iterator;
+use \ArrayAccess;
 
 /**
- * Require CFPropertyList
+ * @example   example-create-02.php Using CFTypeDetector
+ * @example   example-create-03.php Using CFTypeDetector with CFDate and CFData
+ * @example   example-create-04.php Using and extended CFTypeDetector
  */
-require_once(__DIR__.'/../vendor/autoload.php');
+class CFUid extends CFType
+{
+    public function toXML(DOMDocument $doc, $nodeName = "")
+    {
+        $obj = new CFDictionary(array('CF$UID' => new CFNumber($this->value)));
+        return $obj->toXml($doc);
+    }
 
-
-/*
- * create a new CFPropertyList instance which loads the sample.plist on construct.
- * since we know it's an XML file, we can skip format-determination
- */
-$plist = new CFPropertyList( __DIR__.'/sample.xml.plist', CFPropertyList::FORMAT_XML );
-
-/*
- * retrieve the array structure of sample.plist and dump to stdout
- */
-
-echo '<pre>';
-var_dump( $plist->toArray() );
-echo '</pre>';
-
-?>
+    public function toBinary(CFBinaryPropertyList &$bplist)
+    {
+        return $bplist->uidToBinary($this->value);
+    }
+}
