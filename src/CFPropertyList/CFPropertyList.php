@@ -591,7 +591,7 @@ class CFPropertyList extends CFBinaryPropertyList implements Iterator
 
   /**
    * Get first (and only) child, or complete collection.
-   * @param string $cftype if set to true returned value will be CFArray instead of an array in case of a collection
+   * @param boolean $cftype if set to true returned value will be CFArray instead of an array in case of a collection
    * @return CFType|array CFType or list of CFTypes known to the PropertyList
    * @uses $value for retrieving CFTypes
    */
