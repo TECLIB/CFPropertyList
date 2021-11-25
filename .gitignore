@@ -7,3 +7,4 @@ Makefile
 .DS_Store
 .vscode
 node-modules
+/.phpunit.cache/
