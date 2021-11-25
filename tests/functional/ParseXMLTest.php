@@ -103,11 +103,10 @@ class ParseXMLTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($vals['birth-date'], 412035803);
     }
 
-  /**
-   * @expectedException CFPropertyList\IOException
-   */
     public function testEmptyString()
     {
+        $this->expectException(IOException::class);
+
         $plist = new CFPropertyList();
         $plist->parse('');
     }
