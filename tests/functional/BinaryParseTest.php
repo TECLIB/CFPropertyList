@@ -104,11 +104,10 @@ class BinaryParseTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($vals['birth-date'], 412035803);
     }
 
-  /**
-   * @expectedException CFPropertyList\PListException
-   */
     public function testEmptyString()
     {
+        $this->expectException(PListException::class);
+
         $plist = new CFPropertyList();
         $plist->parseBinary('');
     }
