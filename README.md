@@ -34,7 +34,7 @@ Although you might want to deliver data to your iPhone application, you might wa
 
 |**Release channel**|Beta Channel|
 |:---:|:---:|
-|[![unit tests](https://github.com/TECLIB/CFPropertyList/actions/workflows/run_tests.yml/badge.svg?branch=master)](https://travis-ci.org/TECLIB/CFPropertyList)|[![unit tests](https://github.com/TECLIB/CFPropertyList/actions/workflows/run_tests.yml/badge.svg?branch=develop)](https://travis-ci.org/TECLIB/CFPropertyList)|
+|![unit tests](https://github.com/TECLIB/CFPropertyList/actions/workflows/run_tests.yml/badge.svg?branch=master)|![unit tests](https://github.com/TECLIB/CFPropertyList/actions/workflows/run_tests.yml/badge.svg?branch=develop)|
 
 ## Installation
 
