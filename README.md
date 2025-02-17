@@ -7,6 +7,8 @@
 [![Project Status: Active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
+:warning: This repository has been archived. A [fork of this repository](https://github.com/moodlehq/CFPropertyList/) has beeen created by the organization Moodlehq on Github to continue its maintenance. Please use it instead.
+
 Teclib’ is an open source software editor that offers a vast range of fully integrated open source technology packages, to better respond to business needs.
 
 Visit our Website [Teclib'](http://www.teclib-edition.com/en/).
